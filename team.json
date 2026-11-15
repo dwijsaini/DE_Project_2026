@@ -1,0 +1,27 @@
+{
+  "team_number": "T0129",
+  "group_lead": {
+    "name": "Dwij Saini",
+    "enrollment_no": "2501010158",
+    "github": "dwijsaini"
+  },
+  "members": [
+    {
+      "name": "Gyanshi",
+      "enrollment_no": "2501010173",
+      "github": "gyanshigupta"
+    },
+    {
+      "name": "Rudra",
+      "enrollment_no": "2501010387",
+      "github": "RudraChittoda"
+    },
+    {
+      "name": "Raja",
+      "enrollment_no": "2501010366",
+      "github": "RajaChaudhary99"
+    }
+  ],
+  "postgres_version": "",
+  "laptop_used_for_benchmarks": ""
+}
