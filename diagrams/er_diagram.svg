@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1660" height="1190" viewBox="0 0 1660 1190" role="img" aria-labelledby="title desc">
+  <title id="title">Google Pay database entity relationship diagram</title>
+  <desc id="desc">Nine tables for cities, users, bank accounts, VPAs, merchants, transactions, rewards, bill payments and disputes. Cardinalities and exact editable ER source are in er_diagram.mmd.</desc>
+  <defs>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#172033}.entity{fill:#fff;stroke:#536783;stroke-width:2;rx:9}.head{fill:#e9f0fa;stroke:#536783;stroke-width:2;rx:9}.edge{fill:none;stroke:#72839b;stroke-width:2}.edgeLabel{font-size:14px;fill:#485a72}.title{font-size:25px;font-weight:700}.name{font-size:18px;font-weight:700}.field{font-size:14px}.note{font-size:14px;fill:#495b72}
+    </style>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#72839b"/></marker>
+  </defs>
+  <text x="830" y="32" text-anchor="middle" class="title">Google Pay Digital Payments — ER Diagram</text>
+  <!-- Relationships are drawn behind entities. Use er_diagram.mmd for exact keys/cardinalities. -->
+  <path class="edge" d="M480 195 H600" marker-end="url(#arr)"/><text x="495" y="184" class="edgeLabel">1 : many</text>
+  <path class="edge" d="M280 330 V390 H1320 V330" marker-end="url(#arr)"/><text x="795" y="382" class="edgeLabel">city 1 : many merchants</text>
+  <path class="edge" d="M800 330 V390 H285 V430" marker-end="url(#arr)"/><text x="505" y="382" class="edgeLabel">user 1 : many accounts</text>
+  <path class="edge" d="M800 330 V430" marker-end="url(#arr)"/><text x="814" y="384" class="edgeLabel">user 1 : many VPAs</text>
+  <path class="edge" d="M480 555 H600" marker-end="url(#arr)"/><text x="490" y="544" class="edgeLabel">account 1 : many VPAs</text>
+  <path class="edge" d="M1000 555 H1120" marker-end="url(#arr)"/><text x="1008" y="544" class="edgeLabel">payer VPA</text>
+  <path class="edge" d="M1320 330 V430" marker-end="url(#arr)"/><text x="1332" y="385" class="edgeLabel">merchant 1 : many P2M</text>
+  <path class="edge" d="M1320 730 V820" marker-end="url(#arr)"/><text x="1332" y="778" class="edgeLabel">transaction 1 : many disputes</text>
+  <path class="edge" d="M600 300 H540 V790 H280 V820" marker-end="url(#arr)"/><text x="320" y="782" class="edgeLabel">user owns rewards</text>
+  <path class="edge" d="M1120 700 V790 H480 V925" marker-end="url(#arr)"/><text x="745" y="782" class="edgeLabel">transaction earns rewards</text>
+  <path class="edge" d="M1000 250 H1625 V925 H1000" marker-end="url(#arr)"/><text x="1437" y="244" class="edgeLabel">user pays bills / raises disputes</text>
+  <path class="edge" d="M600 250 H535 V1000 H1120" marker-end="url(#arr)"/><text x="735" y="992" class="edgeLabel">user raises dispute</text>
+
+  <!-- Cities -->
+  <rect class="head" x="80" y="80" width="400" height="45"/><rect class="entity" x="80" y="125" width="400" height="205"/>
+  <text class="name" x="280" y="109" text-anchor="middle">CITIES</text>
+  <text class="field" x="100" y="157">PK  city_id : INTEGER</text><text class="field" x="100" y="184">city_name : TEXT</text><text class="field" x="100" y="211">state : TEXT</text>
+
+  <!-- Users -->
+  <rect class="head" x="600" y="80" width="400" height="45"/><rect class="entity" x="600" y="125" width="400" height="205"/>
+  <text class="name" x="800" y="109" text-anchor="middle">USERS</text>
+  <text class="field" x="620" y="157">PK  user_id : INTEGER</text><text class="field" x="620" y="184">full_name : TEXT · phone : VARCHAR(10)</text><text class="field" x="620" y="211">email : TEXT · FK city_id</text><text class="field" x="620" y="238">kyc_status : VARCHAR(10) · is_blocked : BOOLEAN</text><text class="field" x="620" y="265">created_at : TIMESTAMPTZ</text>
+
+  <!-- Merchants -->
+  <rect class="head" x="1120" y="80" width="400" height="45"/><rect class="entity" x="1120" y="125" width="400" height="205"/>
+  <text class="name" x="1320" y="109" text-anchor="middle">MERCHANTS</text>
+  <text class="field" x="1140" y="157">PK  merchant_id : INTEGER</text><text class="field" x="1140" y="184">merchant_name : TEXT · mcc : CHAR(4)</text><text class="field" x="1140" y="211">UQ merchant_vpa : VARCHAR(255)</text><text class="field" x="1140" y="238">FK city_id · is_verified : BOOLEAN</text><text class="field" x="1140" y="265">onboarded_on : DATE</text>
+
+  <!-- Bank accounts -->
+  <rect class="head" x="80" y="430" width="400" height="45"/><rect class="entity" x="80" y="475" width="400" height="255"/>
+  <text class="name" x="280" y="459" text-anchor="middle">BANK_ACCOUNTS</text>
+  <text class="field" x="100" y="507">PK  account_id : INTEGER</text><text class="field" x="100" y="534">FK  user_id : INTEGER</text><text class="field" x="100" y="561">bank_name : TEXT · ifsc : CHAR(11)</text><text class="field" x="100" y="588">account_last4 : CHAR(4)</text><text class="field" x="100" y="615">account_type : VARCHAR(10)</text><text class="field" x="100" y="642">is_primary : BOOLEAN</text><text class="field" x="100" y="669">linked_at : TIMESTAMPTZ</text>
+
+  <!-- VPAs -->
+  <rect class="head" x="600" y="430" width="400" height="45"/><rect class="entity" x="600" y="475" width="400" height="255"/>
+  <text class="name" x="800" y="459" text-anchor="middle">VPAS</text>
+  <text class="field" x="620" y="507">PK  vpa : VARCHAR(255)</text><text class="field" x="620" y="534">FK  user_id : INTEGER</text><text class="field" x="620" y="561">FK  account_id : INTEGER</text><text class="field" x="620" y="588">is_active : BOOLEAN</text><text class="field" x="620" y="615">created_at : TIMESTAMPTZ</text>
+
+  <!-- Transactions -->
+  <rect class="head" x="1120" y="430" width="400" height="45"/><rect class="entity" x="1120" y="475" width="400" height="255"/>
+  <text class="name" x="1320" y="459" text-anchor="middle">TRANSACTIONS</text>
+  <text class="field" x="1140" y="500">PK txn_id · UQ upi_ref CHAR(12)</text><text class="field" x="1140" y="523">txn_type · FK payer_vpa</text><text class="field" x="1140" y="546">payee_vpa (not an FK)</text><text class="field" x="1140" y="569">FK merchant_id (nullable for P2P)</text><text class="field" x="1140" y="592">amount : NUMERIC(12,2) · note : TEXT?</text><text class="field" x="1140" y="615">initiated_at : TIMESTAMPTZ</text><text class="field" x="1140" y="638">completed_at : TIMESTAMPTZ?</text><text class="field" x="1140" y="661">status · failure_code : VARCHAR(3)?</text>
+
+  <!-- Rewards -->
+  <rect class="head" x="80" y="820" width="400" height="45"/><rect class="entity" x="80" y="865" width="400" height="245"/>
+  <text class="name" x="280" y="849" text-anchor="middle">REWARDS</text>
+  <text class="field" x="100" y="897">PK reward_id · FK user_id</text><text class="field" x="100" y="924">FK txn_id · reward_type</text><text class="field" x="100" y="951">amount : NUMERIC(12,2) · status</text><text class="field" x="100" y="978">issued_at : TIMESTAMPTZ</text><text class="field" x="100" y="1005">expires_at : TIMESTAMPTZ</text><text class="field" x="100" y="1032">credited_at : TIMESTAMPTZ?</text>
+
+  <!-- Bills -->
+  <rect class="head" x="600" y="820" width="400" height="45"/><rect class="entity" x="600" y="865" width="400" height="245"/>
+  <text class="name" x="800" y="849" text-anchor="middle">BILL_PAYMENTS</text>
+  <text class="field" x="620" y="897">PK bill_id · FK user_id</text><text class="field" x="620" y="924">biller_category · biller_name</text><text class="field" x="620" y="951">consumer_number : VARCHAR(32)</text><text class="field" x="620" y="978">amount : NUMERIC(12,2)</text><text class="field" x="620" y="1005">due_date : DATE · status</text><text class="field" x="620" y="1032">paid_at : TIMESTAMPTZ?</text>
+
+  <!-- Disputes -->
+  <rect class="head" x="1120" y="820" width="400" height="45"/><rect class="entity" x="1120" y="865" width="400" height="245"/>
+  <text class="name" x="1320" y="849" text-anchor="middle">DISPUTES</text>
+  <text class="field" x="1140" y="897">PK dispute_id · FK txn_id</text><text class="field" x="1140" y="924">FK raised_by : user_id</text><text class="field" x="1140" y="951">reason : VARCHAR(32)</text><text class="field" x="1140" y="978">raised_at : TIMESTAMPTZ</text><text class="field" x="1140" y="1005">status : VARCHAR(10)</text><text class="field" x="1140" y="1032">resolved_at : TIMESTAMPTZ?</text>
+
+  <text x="80" y="1150" class="note">P2P payee VPAs may be external and are intentionally not foreign-keyed. See diagrams/er_diagram.mmd for the complete editable relationship notation.</text>
+</svg>

@@ -1,0 +1,100 @@
+erDiagram
+    CITIES ||--o{ USERS : has
+    CITIES ||--o{ MERCHANTS : locates
+    USERS ||--o{ BANK_ACCOUNTS : links
+    USERS ||--o{ VPAS : owns
+    BANK_ACCOUNTS ||--o{ VPAS : funds
+    VPAS ||--o{ TRANSACTIONS : payer
+    MERCHANTS ||--o{ TRANSACTIONS : receives_P2M
+    USERS ||--o{ REWARDS : owns
+    TRANSACTIONS ||--o{ REWARDS : earns
+    USERS ||--o{ BILL_PAYMENTS : pays
+    TRANSACTIONS ||--o{ DISPUTES : concerns
+    USERS ||--o{ DISPUTES : raises
+
+    CITIES {
+        int city_id PK
+        text city_name
+        text state
+    }
+    USERS {
+        int user_id PK
+        text full_name
+        varchar phone UK
+        text email UK
+        int city_id FK
+        varchar kyc_status
+        boolean is_blocked
+        timestamptz created_at
+    }
+    BANK_ACCOUNTS {
+        int account_id PK
+        int user_id FK
+        text bank_name
+        char ifsc
+        char account_last4
+        varchar account_type
+        boolean is_primary
+        timestamptz linked_at
+    }
+    VPAS {
+        varchar vpa PK
+        int user_id FK
+        int account_id FK
+        boolean is_active
+        timestamptz created_at
+    }
+    MERCHANTS {
+        int merchant_id PK
+        text merchant_name
+        char mcc
+        varchar merchant_vpa UK
+        int city_id FK
+        boolean is_verified
+        date onboarded_on
+    }
+    TRANSACTIONS {
+        int txn_id PK
+        char upi_ref UK
+        varchar txn_type
+        varchar payer_vpa FK
+        varchar payee_vpa
+        int merchant_id FK
+        numeric amount
+        text note
+        timestamptz initiated_at
+        timestamptz completed_at
+        varchar status
+        varchar failure_code
+    }
+    REWARDS {
+        int reward_id PK
+        int user_id FK
+        int txn_id FK
+        varchar reward_type
+        numeric amount
+        varchar status
+        timestamptz issued_at
+        timestamptz expires_at
+        timestamptz credited_at
+    }
+    BILL_PAYMENTS {
+        int bill_id PK
+        int user_id FK
+        varchar biller_category
+        text biller_name
+        varchar consumer_number
+        numeric amount
+        date due_date
+        varchar status
+        timestamptz paid_at
+    }
+    DISPUTES {
+        int dispute_id PK
+        int txn_id FK
+        int raised_by FK
+        varchar reason
+        timestamptz raised_at
+        varchar status
+        timestamptz resolved_at
+    }
