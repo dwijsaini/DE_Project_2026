@@ -1,6 +1,6 @@
 # Google Pay database schema design
 
-> **Design draft for CP1.** Table and column names follow the supplied CSV files. Coordinate with the author of `sql/01_schema.sql` before finalizing types or constraints. CSV profile findings below were checked against `seed_data.zip`; PostgreSQL load and integrity-query results are marked pending until the team's schema and loader have been run.
+> **CP1 implementation.** The SQL schema and ER diagram use the same nine tables and relationships. The schema was compared with Rudra's `sql/01_schema.sql`; table and column names, key relationships, nullable seed fields, and `CHAR(4)` MCC representation match. PostgreSQL load and loaded-database integrity results remain pending because PostgreSQL is unavailable in this environment.
 
 ## Data model
 
@@ -47,8 +47,8 @@ FD: `user_id → full_name, phone, email, city_id, kyc_status, is_blocked, creat
 | `ifsc` | CHAR(11) | NN, IFSC-format CHECK | Branch code; not unique because many accounts can use one branch. |
 | `account_last4` | CHAR(4) | NN, digit-format CHECK | Preserve leading zeroes and avoid storing full account numbers. |
 | `account_type` | VARCHAR(10) | NN, CHECK in `SAVINGS`, `CURRENT` | Observed domain. |
-| `is_primary` | BOOLEAN | NN | Primary account flag; enforce at most one true row per user if compatible with CP1's constraint-only rule, otherwise show the integrity query result. |
-| `linked_at` | TIMESTAMPTZ | NN | Link time includes offset. |
+| `is_primary` | BOOLEAN | NN; at most one primary per user | Enforced by a generated nullable `primary_user_id` and UNIQUE constraint; non-primary rows yield NULL, which PostgreSQL allows repeatedly. |
+| `linked_at` | TIMESTAMPTZ | NULL | 9 seed rows have no linked timestamp. |
 
 FD: `account_id → user_id, bank_name, ifsc, account_last4, account_type, is_primary, linked_at`.
 
@@ -60,7 +60,7 @@ FD: `account_id → user_id, bank_name, ifsc, account_last4, account_type, is_pr
 | `user_id` | INTEGER | NN, FK → `users.user_id`, RESTRICT | VPA owner; retained for direct workload access. |
 | `account_id` | INTEGER | NN, FK → `bank_accounts.account_id`, RESTRICT | Linked bank account. |
 | `is_active` | BOOLEAN | NN | Whether the VPA can receive payments. |
-| `created_at` | TIMESTAMPTZ | NN | Creation timestamp with offset. |
+| `created_at` | TIMESTAMPTZ | NULL | 9 seed rows have no creation timestamp. |
 
 FD: `vpa → user_id, account_id, is_active, created_at`. `vpas.user_id` is redundant because `account_id` already determines the owner through `bank_accounts`; keeping it supports the given queries. Enforce owner agreement with a composite FK to `bank_accounts(account_id,user_id)` if the parent has a matching UNIQUE constraint. CSV profile found no account/user mismatches.
 
@@ -70,11 +70,11 @@ FD: `vpa → user_id, account_id, is_active, created_at`. `vpas.user_id` is redu
 |---|---|---|---|
 | `merchant_id` | INTEGER | PK, NN | Stable merchant identifier. |
 | `merchant_name` | TEXT | NN | Search/display name. |
-| `mcc` | CHAR(4) | NN, four-character CHECK | A category code, not a quantity; preserve its four-character representation. |
+| `mcc` | CHAR(4) | NN, digit CHECK allowing 3 or 4 digits | A category code, not a quantity; the fixed-width type stores any three-digit code with its trailing pad. |
 | `merchant_vpa` | VARCHAR(255) | NN, UNIQUE, VPA-format CHECK | Merchant payment address. |
 | `city_id` | INTEGER | NN, FK → `cities.city_id`, RESTRICT | Merchant location. |
 | `is_verified` | BOOLEAN | NN | Verification flag. |
-| `onboarded_on` | DATE | NN | Date-only value in CSV. |
+| `onboarded_on` | DATE | NULL | 7 seed rows have no onboarding date. |
 
 FD: `merchant_id → merchant_name, mcc, merchant_vpa, city_id, is_verified, onboarded_on`; `merchant_vpa` is also a candidate key.
 
@@ -153,7 +153,7 @@ FD: `dispute_id → txn_id, raised_by, reason, raised_at, status, resolved_at`. 
 | `cities` → `merchants` | one city to many merchants | RESTRICT. |
 | `users` → `bank_accounts` | one user to many linked accounts | RESTRICT to preserve payment history. |
 | `users` → `vpas` | one user to many VPAs | RESTRICT. |
-| `bank_accounts` → `vpas` | one account to one or more VPAs; seed has equal row counts | RESTRICT; do not infer uniqueness from equal totals alone. |
+| `bank_accounts` → `vpas` | one account to zero or more VPAs; seed has equal row counts and each account is linked once | RESTRICT; do not infer a one-to-one rule from equal totals alone. |
 | `vpas` → `transactions` as payer | one VPA to many transactions | RESTRICT to preserve payment history. |
 | `merchants` → `transactions` | one merchant to many P2M transactions | RESTRICT. |
 | `users` → `rewards` and `transactions` → `rewards` | one user/transaction to many rewards | RESTRICT; retain financial records. |
@@ -179,7 +179,7 @@ The transaction status does not determine a specific failure code; it only deter
 
 ## Seed-file profile and integrity checks
 
-The CSV files contain the expected row counts listed in `README.md`. Inspection of empty fields found: users.email 15,950; transactions.merchant_id 110,581, note 175,013, completed_at 125, failure_code 238,077; rewards.credited_at 8,054; bill_payments.paid_at 4,338; disputes.resolved_at 116. These are consistent with optional email/note, P2P transactions, pending transactions, non-failed payments, uncredited rewards, unpaid bills and open disputes. Do not treat these as errors.
+The CSV files contain the expected row counts listed in `README.md`. Inspection of empty fields found: users.email 15,950; bank_accounts.linked_at 9; vpas.created_at 9; merchants.onboarded_on 7; transactions.merchant_id 110,581, note 175,013, completed_at 125, failure_code 238,077; rewards.credited_at 8,054; bill_payments.paid_at 4,338; disputes.resolved_at 116. These are consistent with optional email/note and dates, P2P transactions, pending transactions, non-failed payments, uncredited rewards, unpaid bills and open disputes. Do not treat these as errors.
 
 CSV-level checks performed before the PostgreSQL load:
 
@@ -194,7 +194,19 @@ CSV-level checks performed before the PostgreSQL load:
 | Rewards, bills or disputes with missing user/transaction references | 0 |
 | Transaction payee VPA not found among Google Pay VPAs or merchant VPAs | 16,583; expected external P2P destinations, so no payee FK |
 
-**PostgreSQL load evidence still needs to be added:** after `sql/01_schema.sql` and `sql/02_load_data.sql` run successfully, replace this note with the nine `COUNT(*)` results and at least three SQL integrity-check outputs from the loaded `gpay` schema. The CSV-level checks above are useful design evidence but do not replace the required database-load results. No integrity check here claims that PostgreSQL has been run.
+**PostgreSQL load evidence: pending.** This environment has no `psql` client or PostgreSQL server, so the DDL and loader could not be executed here. After `sql/01_schema.sql` and `sql/02_load_data.sql` run successfully, record the nine `COUNT(*)` results and at least three SQL integrity-check outputs from the loaded `gpay` schema below. CSV-level checks do not replace database-load results.
+
+```sql
+SELECT 'cities' AS table_name, count(*) FROM gpay.cities
+UNION ALL SELECT 'users', count(*) FROM gpay.users
+UNION ALL SELECT 'bank_accounts', count(*) FROM gpay.bank_accounts
+UNION ALL SELECT 'vpas', count(*) FROM gpay.vpas
+UNION ALL SELECT 'merchants', count(*) FROM gpay.merchants
+UNION ALL SELECT 'transactions', count(*) FROM gpay.transactions
+UNION ALL SELECT 'rewards', count(*) FROM gpay.rewards
+UNION ALL SELECT 'bill_payments', count(*) FROM gpay.bill_payments
+UNION ALL SELECT 'disputes', count(*) FROM gpay.disputes;
+```
 
 Recommended loaded-database integrity checks to paste with results:
 
@@ -211,12 +223,19 @@ FROM gpay.vpas v
 JOIN gpay.bank_accounts ba ON ba.account_id = v.account_id
 WHERE v.user_id <> ba.user_id;
 
--- No user should have more than one primary account.
+-- Every user should have exactly one primary account in this seed.
 SELECT count(*) AS users_with_multiple_primary_accounts
 FROM (
   SELECT user_id FROM gpay.bank_accounts
   WHERE is_primary GROUP BY user_id HAVING count(*) > 1
 ) s;
+
+SELECT count(*) AS users_without_primary_account
+FROM gpay.users u
+WHERE NOT EXISTS (
+  SELECT 1 FROM gpay.bank_accounts ba
+  WHERE ba.user_id = u.user_id AND ba.is_primary
+);
 
 -- Reward owner should match the user who paid the linked transaction.
 SELECT count(*) AS mismatches
