@@ -1,6 +1,6 @@
 # Google Pay database schema design
 
-> **CP1 implementation.** The SQL schema and ER diagram use the same nine tables and relationships. The schema was compared with Rudra's `sql/01_schema.sql`; table and column names, key relationships, nullable seed fields, and `CHAR(4)` MCC representation match. PostgreSQL load and loaded-database integrity results remain pending because PostgreSQL is unavailable in this environment.
+> **CP1 implementation.** The SQL schema and ER diagram use the same nine tables and relationships. The schema was compared with Rudra's `sql/01_schema.sql`; table and column names, key relationships, nullable seed fields, and `CHAR(4)` MCC representation match. The schema and all seed CSVs were loaded successfully into PostgreSQL 18.7 on 2026-11-16; loaded row counts and integrity-check results are recorded below.
 
 ## Data model
 
@@ -195,7 +195,31 @@ CSV-level checks performed before the PostgreSQL load:
 | Rewards, bills or disputes with missing user/transaction references | 0 |
 | Transaction payee VPA not found among Google Pay VPAs or merchant VPAs | 16,583; expected external P2P destinations, so no payee FK |
 
-**PostgreSQL load evidence: pending.** This environment has no `psql` client or PostgreSQL server, so the DDL and loader could not be executed here. After `sql/01_schema.sql` and `sql/02_load_data.sql` run successfully, record the nine `COUNT(*)` results and at least three SQL integrity-check outputs from the loaded `gpay` schema below. CSV-level checks do not replace database-load results.
+**PostgreSQL load evidence.** `sql/01_schema.sql` and `sql/02_load_data.sql` both completed successfully against PostgreSQL 18.7 in database `gpay_cp1` on 2026-11-16. All nine CSV files loaded without rejected rows. The database row counts are:
+
+| Table | Loaded rows |
+|---|---:|
+| `cities` | 10 |
+| `users` | 40,000 |
+| `bank_accounts` | 53,333 |
+| `vpas` | 53,333 |
+| `merchants` | 3,000 |
+| `transactions` | 250,468 |
+| `rewards` | 39,799 |
+| `bill_payments` | 30,000 |
+| `disputes` | 3,569 |
+
+Loaded-database cross-table integrity checks returned zero mismatches. Every user has exactly one primary bank account in this seed:
+
+| Check | Result |
+|---|---:|
+| P2M transaction payee vs referenced merchant VPA mismatches | 0 |
+| VPA owner vs linked bank-account owner mismatches | 0 |
+| Users with multiple primary accounts | 0 |
+| Users without a primary account | 0 |
+| Reward owner vs transaction payer mismatches | 0 |
+
+These checks were run against the loaded PostgreSQL tables; the earlier CSV-level profile provides additional input-file checks.
 
 ```sql
 SELECT 'cities' AS table_name, count(*) FROM gpay.cities
@@ -209,7 +233,7 @@ UNION ALL SELECT 'bill_payments', count(*) FROM gpay.bill_payments
 UNION ALL SELECT 'disputes', count(*) FROM gpay.disputes;
 ```
 
-Recommended loaded-database integrity checks to paste with results:
+Loaded-database integrity checks used:
 
 ```sql
 -- Every P2M transaction's payee must be the referenced merchant's VPA.
