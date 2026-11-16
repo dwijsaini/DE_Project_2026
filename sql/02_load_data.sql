@@ -14,5 +14,14 @@ SET search_path TO gpay;
 
 ANALYZE;
 
--- Row counts and integrity checks required by CP1 are documented in
--- docs/02_schema_design.md after running this script against PostgreSQL.
+-- Confirm the loaded row counts against the seed-file totals in README.md.
+SELECT 'cities' AS table_name, count(*) AS loaded_rows FROM gpay.cities
+UNION ALL SELECT 'users', count(*) FROM gpay.users
+UNION ALL SELECT 'bank_accounts', count(*) FROM gpay.bank_accounts
+UNION ALL SELECT 'vpas', count(*) FROM gpay.vpas
+UNION ALL SELECT 'merchants', count(*) FROM gpay.merchants
+UNION ALL SELECT 'transactions', count(*) FROM gpay.transactions
+UNION ALL SELECT 'rewards', count(*) FROM gpay.rewards
+UNION ALL SELECT 'bill_payments', count(*) FROM gpay.bill_payments
+UNION ALL SELECT 'disputes', count(*) FROM gpay.disputes
+ORDER BY table_name;
