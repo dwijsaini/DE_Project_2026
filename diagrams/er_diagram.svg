@@ -40,7 +40,7 @@
   <!-- Bank accounts -->
   <rect class="head" x="80" y="430" width="400" height="45"/><rect class="entity" x="80" y="475" width="400" height="255"/>
   <text class="name" x="280" y="459" text-anchor="middle">BANK_ACCOUNTS</text>
-  <text class="field" x="100" y="507">PK  account_id : INTEGER</text><text class="field" x="100" y="534">FK  user_id : INTEGER</text><text class="field" x="100" y="561">bank_name : TEXT · ifsc : CHAR(11)</text><text class="field" x="100" y="588">account_last4 : CHAR(4)</text><text class="field" x="100" y="615">account_type : VARCHAR(10)</text><text class="field" x="100" y="642">is_primary : BOOLEAN</text><text class="field" x="100" y="669">linked_at : TIMESTAMPTZ</text>
+  <text class="field" x="100" y="507">PK  account_id : INTEGER</text><text class="field" x="100" y="534">FK  user_id : INTEGER</text><text class="field" x="100" y="561">bank_name : TEXT · ifsc : CHAR(11)</text><text class="field" x="100" y="588">account_last4 : CHAR(4)</text><text class="field" x="100" y="615">account_type : VARCHAR(10)</text><text class="field" x="100" y="642">is_primary : BOOLEAN</text><text class="field" x="100" y="669">linked_at : TIMESTAMPTZ</text><text class="field" x="100" y="696">primary_user_id : INTEGER (generated, unique)</text>
 
   <!-- VPAs -->
   <rect class="head" x="600" y="430" width="400" height="45"/><rect class="entity" x="600" y="475" width="400" height="255"/>

@@ -49,8 +49,9 @@ FD: `user_id → full_name, phone, email, city_id, kyc_status, is_blocked, creat
 | `account_type` | VARCHAR(10) | NN, CHECK in `SAVINGS`, `CURRENT` | Observed domain. |
 | `is_primary` | BOOLEAN | NN; at most one primary per user | Enforced by a generated nullable `primary_user_id` and UNIQUE constraint; non-primary rows yield NULL, which PostgreSQL allows repeatedly. |
 | `linked_at` | TIMESTAMPTZ | NULL | 9 seed rows have no linked timestamp. |
+| `primary_user_id` | INTEGER | Generated; UNIQUE; not supplied by CSV | Equals `user_id` only for a primary account and is NULL otherwise. It exists only to enforce at most one primary account per user. The loader's `\copy` omits generated columns automatically. |
 
-FD: `account_id → user_id, bank_name, ifsc, account_last4, account_type, is_primary, linked_at`.
+FD: `account_id → user_id, bank_name, ifsc, account_last4, account_type, is_primary, linked_at`; `primary_user_id` is a generated integrity helper, not an imported business attribute. `UNIQUE(account_id,user_id)` supports the composite owner FK from `vpas`.
 
 ### `vpas` — 53,333 rows
 
@@ -62,7 +63,7 @@ FD: `account_id → user_id, bank_name, ifsc, account_last4, account_type, is_pr
 | `is_active` | BOOLEAN | NN | Whether the VPA can receive payments. |
 | `created_at` | TIMESTAMPTZ | NULL | 9 seed rows have no creation timestamp. |
 
-FD: `vpa → user_id, account_id, is_active, created_at`. `vpas.user_id` is redundant because `account_id` already determines the owner through `bank_accounts`; keeping it supports the given queries. Enforce owner agreement with a composite FK to `bank_accounts(account_id,user_id)` if the parent has a matching UNIQUE constraint. CSV profile found no account/user mismatches.
+FD: `vpa → user_id, account_id, is_active, created_at`. `vpas.user_id` is redundant because `account_id` already determines the owner through `bank_accounts`; keeping it supports the given queries. The schema enforces owner agreement with a composite FK to `bank_accounts(account_id,user_id)`. CSV profile found no account/user mismatches.
 
 ### `merchants` — 3,000 rows
 
