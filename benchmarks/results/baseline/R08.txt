@@ -1,0 +1,66 @@
+=== R08 run 1 ===
+Sort  (cost=26132.95..26218.90 rows=34382 width=65) (actual time=118.432..118.432 rows=13.00 loops=1)
+  Sort Key: (count(DISTINCT payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=4223 read=274, temp read=864 written=866
+  ->  GroupAggregate  (cost=20619.93..23542.37 rows=34382 width=65) (actual time=100.166..118.426 rows=13.00 loops=1)
+        Group Key: payee_vpa, ((initiated_at)::date)
+        Filter: (count(DISTINCT payer_vpa) >= 5)
+        Rows Removed by Filter: 102266
+        Buffers: shared hit=4220 read=274, temp read=864 written=866
+        ->  Sort  (cost=20619.93..20877.79 rows=103145 width=55) (actual time=88.187..98.848 rows=102742.00 loops=1)
+              Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
+              Sort Method: external merge  Disk: 6912kB
+              Buffers: shared hit=4220 read=274, temp read=864 written=866
+              ->  Seq Scan on transactions  (cost=0.00..8502.88 rows=103145 width=55) (actual time=0.040..19.944 rows=102742.00 loops=1)
+                    Filter: (((txn_type)::text = 'P2P'::text) AND ((status)::text = 'SUCCESS'::text))
+                    Rows Removed by Filter: 147726
+                    Buffers: shared hit=4214 read=274
+Planning:
+  Buffers: shared hit=204
+Planning Time: 0.220 ms
+Execution Time: 119.904 ms
+=== R08 run 2 ===
+Sort  (cost=26132.95..26218.90 rows=34382 width=65) (actual time=117.217..117.217 rows=13.00 loops=1)
+  Sort Key: (count(DISTINCT payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=4317 read=180, temp read=864 written=866
+  ->  GroupAggregate  (cost=20619.93..23542.37 rows=34382 width=65) (actual time=98.861..117.210 rows=13.00 loops=1)
+        Group Key: payee_vpa, ((initiated_at)::date)
+        Filter: (count(DISTINCT payer_vpa) >= 5)
+        Rows Removed by Filter: 102266
+        Buffers: shared hit=4314 read=180, temp read=864 written=866
+        ->  Sort  (cost=20619.93..20877.79 rows=103145 width=55) (actual time=86.795..97.621 rows=102742.00 loops=1)
+              Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
+              Sort Method: external merge  Disk: 6912kB
+              Buffers: shared hit=4314 read=180, temp read=864 written=866
+              ->  Seq Scan on transactions  (cost=0.00..8502.88 rows=103145 width=55) (actual time=0.031..20.004 rows=102742.00 loops=1)
+                    Filter: (((txn_type)::text = 'P2P'::text) AND ((status)::text = 'SUCCESS'::text))
+                    Rows Removed by Filter: 147726
+                    Buffers: shared hit=4308 read=180
+Planning:
+  Buffers: shared hit=204
+Planning Time: 0.200 ms
+Execution Time: 118.702 ms
+=== R08 run 3 ===
+Sort  (cost=26132.95..26218.90 rows=34382 width=65) (actual time=117.186..117.186 rows=13.00 loops=1)
+  Sort Key: (count(DISTINCT payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=4411 read=86, temp read=864 written=866
+  ->  GroupAggregate  (cost=20619.93..23542.37 rows=34382 width=65) (actual time=98.820..117.180 rows=13.00 loops=1)
+        Group Key: payee_vpa, ((initiated_at)::date)
+        Filter: (count(DISTINCT payer_vpa) >= 5)
+        Rows Removed by Filter: 102266
+        Buffers: shared hit=4408 read=86, temp read=864 written=866
+        ->  Sort  (cost=20619.93..20877.79 rows=103145 width=55) (actual time=86.848..97.546 rows=102742.00 loops=1)
+              Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
+              Sort Method: external merge  Disk: 6912kB
+              Buffers: shared hit=4408 read=86, temp read=864 written=866
+              ->  Seq Scan on transactions  (cost=0.00..8502.88 rows=103145 width=55) (actual time=0.031..20.061 rows=102742.00 loops=1)
+                    Filter: (((txn_type)::text = 'P2P'::text) AND ((status)::text = 'SUCCESS'::text))
+                    Rows Removed by Filter: 147726
+                    Buffers: shared hit=4402 read=86
+Planning:
+  Buffers: shared hit=204
+Planning Time: 0.198 ms
+Execution Time: 118.604 ms

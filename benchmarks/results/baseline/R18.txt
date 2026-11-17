@@ -1,0 +1,141 @@
+=== R18 run 1 ===
+Sort  (cost=10797.57..10800.85 rows=1314 width=56) (actual time=24.054..24.112 rows=2882.00 loops=1)
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 247kB
+  Buffers: shared hit=7052 read=487
+  ->  Finalize HashAggregate  (cost=10670.36..10729.50 rows=1314 width=56) (actual time=23.276..23.696 rows=2882.00 loops=1)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Batches: 1  Memory Usage: 1937kB
+        Rows Removed by Filter: 1028
+        Buffers: shared hit=7049 read=487
+        ->  Gather  (cost=9603.80..10599.38 rows=9463 width=56) (actual time=20.625..21.391 rows=10109.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=7049 read=487
+              ->  Partial HashAggregate  (cost=8603.80..8653.08 rows=3943 width=56) (actual time=18.979..19.436 rows=3369.67 loops=3)
+                    Group Key: u.user_id
+                    Batches: 1  Memory Usage: 1681kB
+                    Buffers: shared hit=7049 read=487
+                    Worker 0:  Batches: 1  Memory Usage: 1425kB
+                    Worker 1:  Batches: 1  Memory Usage: 1681kB
+                    ->  Hash Join  (cost=2304.34..8556.01 rows=9557 width=30) (actual time=7.327..17.852 rows=7634.33 loops=3)
+                          Hash Cond: ((t.payer_vpa)::text = (v.vpa)::text)
+                          Buffers: shared hit=7049 read=487
+                          ->  Parallel Seq Scan on transactions t  (cost=0.00..5792.52 rows=96955 width=30) (actual time=0.005..6.229 rows=77636.33 loops=3)
+                                Filter: ((status)::text = 'SUCCESS'::text)
+                                Rows Removed by Filter: 5853
+                                Buffers: shared hit=4488
+                          ->  Hash  (cost=2238.63..2238.63 rows=5257 width=48) (actual time=7.311..7.312 rows=5237.00 loops=3)
+                                Buckets: 8192  Batches: 1  Memory Usage: 481kB
+                                Buffers: shared hit=2561 read=487
+                                ->  Hash Join  (cost=1037.29..2238.63 rows=5257 width=48) (actual time=3.234..6.812 rows=5237.00 loops=3)
+                                      Hash Cond: (v.user_id = u.user_id)
+                                      Buffers: shared hit=2561 read=487
+                                      ->  Seq Scan on vpas v  (cost=0.00..1061.33 rows=53333 width=28) (actual time=0.014..1.334 rows=53333.00 loops=3)
+                                            Buffers: shared hit=1584
+                                      ->  Hash  (cost=988.00..988.00 rows=3943 width=24) (actual time=3.214..3.214 rows=3924.00 loops=3)
+                                            Buckets: 4096  Batches: 1  Memory Usage: 249kB
+                                            Buffers: shared hit=977 read=487
+                                            ->  Seq Scan on users u  (cost=0.00..988.00 rows=3943 width=24) (actual time=0.277..2.904 rows=3924.00 loops=3)
+                                                  Filter: ((kyc_status)::text <> 'VERIFIED'::text)
+                                                  Rows Removed by Filter: 36076
+                                                  Buffers: shared hit=977 read=487
+Planning:
+  Buffers: shared hit=287
+Planning Time: 0.529 ms
+Execution Time: 24.219 ms
+=== R18 run 2 ===
+Sort  (cost=10797.57..10800.85 rows=1314 width=56) (actual time=22.478..22.537 rows=2882.00 loops=1)
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 247kB
+  Buffers: shared hit=7539
+  ->  Finalize HashAggregate  (cost=10670.36..10729.50 rows=1314 width=56) (actual time=21.719..22.119 rows=2882.00 loops=1)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Batches: 1  Memory Usage: 1937kB
+        Rows Removed by Filter: 1028
+        Buffers: shared hit=7536
+        ->  Gather  (cost=9603.80..10599.38 rows=9463 width=56) (actual time=18.872..19.655 rows=10080.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=7536
+              ->  Partial HashAggregate  (cost=8603.80..8653.08 rows=3943 width=56) (actual time=17.409..17.884 rows=3360.00 loops=3)
+                    Group Key: u.user_id
+                    Batches: 1  Memory Usage: 1681kB
+                    Buffers: shared hit=7536
+                    Worker 0:  Batches: 1  Memory Usage: 1425kB
+                    Worker 1:  Batches: 1  Memory Usage: 1425kB
+                    ->  Hash Join  (cost=2304.34..8556.01 rows=9557 width=30) (actual time=6.044..16.275 rows=7634.33 loops=3)
+                          Hash Cond: ((t.payer_vpa)::text = (v.vpa)::text)
+                          Buffers: shared hit=7536
+                          ->  Parallel Seq Scan on transactions t  (cost=0.00..5792.52 rows=96955 width=30) (actual time=0.005..5.971 rows=77636.33 loops=3)
+                                Filter: ((status)::text = 'SUCCESS'::text)
+                                Rows Removed by Filter: 5853
+                                Buffers: shared hit=4488
+                          ->  Hash  (cost=2238.63..2238.63 rows=5257 width=48) (actual time=6.030..6.030 rows=5237.00 loops=3)
+                                Buckets: 8192  Batches: 1  Memory Usage: 481kB
+                                Buffers: shared hit=3048
+                                ->  Hash Join  (cost=1037.29..2238.63 rows=5257 width=48) (actual time=2.184..5.564 rows=5237.00 loops=3)
+                                      Hash Cond: (v.user_id = u.user_id)
+                                      Buffers: shared hit=3048
+                                      ->  Seq Scan on vpas v  (cost=0.00..1061.33 rows=53333 width=28) (actual time=0.013..1.274 rows=53333.00 loops=3)
+                                            Buffers: shared hit=1584
+                                      ->  Hash  (cost=988.00..988.00 rows=3943 width=24) (actual time=2.164..2.165 rows=3924.00 loops=3)
+                                            Buckets: 4096  Batches: 1  Memory Usage: 249kB
+                                            Buffers: shared hit=1464
+                                            ->  Seq Scan on users u  (cost=0.00..988.00 rows=3943 width=24) (actual time=0.014..1.905 rows=3924.00 loops=3)
+                                                  Filter: ((kyc_status)::text <> 'VERIFIED'::text)
+                                                  Rows Removed by Filter: 36076
+                                                  Buffers: shared hit=1464
+Planning:
+  Buffers: shared hit=287
+Planning Time: 0.442 ms
+Execution Time: 22.679 ms
+=== R18 run 3 ===
+Sort  (cost=10797.57..10800.85 rows=1314 width=56) (actual time=22.523..22.585 rows=2882.00 loops=1)
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 247kB
+  Buffers: shared hit=7539
+  ->  Finalize HashAggregate  (cost=10670.36..10729.50 rows=1314 width=56) (actual time=21.754..22.160 rows=2882.00 loops=1)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Batches: 1  Memory Usage: 1937kB
+        Rows Removed by Filter: 1028
+        Buffers: shared hit=7536
+        ->  Gather  (cost=9603.80..10599.38 rows=9463 width=56) (actual time=19.016..19.802 rows=10019.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=7536
+              ->  Partial HashAggregate  (cost=8603.80..8653.08 rows=3943 width=56) (actual time=17.431..17.892 rows=3339.67 loops=3)
+                    Group Key: u.user_id
+                    Batches: 1  Memory Usage: 1681kB
+                    Buffers: shared hit=7536
+                    Worker 0:  Batches: 1  Memory Usage: 1425kB
+                    Worker 1:  Batches: 1  Memory Usage: 1425kB
+                    ->  Hash Join  (cost=2304.34..8556.01 rows=9557 width=30) (actual time=6.072..16.333 rows=7634.33 loops=3)
+                          Hash Cond: ((t.payer_vpa)::text = (v.vpa)::text)
+                          Buffers: shared hit=7536
+                          ->  Parallel Seq Scan on transactions t  (cost=0.00..5792.52 rows=96955 width=30) (actual time=0.005..5.976 rows=77636.33 loops=3)
+                                Filter: ((status)::text = 'SUCCESS'::text)
+                                Rows Removed by Filter: 5853
+                                Buffers: shared hit=4488
+                          ->  Hash  (cost=2238.63..2238.63 rows=5257 width=48) (actual time=6.058..6.059 rows=5237.00 loops=3)
+                                Buckets: 8192  Batches: 1  Memory Usage: 481kB
+                                Buffers: shared hit=3048
+                                ->  Hash Join  (cost=1037.29..2238.63 rows=5257 width=48) (actual time=2.205..5.596 rows=5237.00 loops=3)
+                                      Hash Cond: (v.user_id = u.user_id)
+                                      Buffers: shared hit=3048
+                                      ->  Seq Scan on vpas v  (cost=0.00..1061.33 rows=53333 width=28) (actual time=0.013..1.267 rows=53333.00 loops=3)
+                                            Buffers: shared hit=1584
+                                      ->  Hash  (cost=988.00..988.00 rows=3943 width=24) (actual time=2.186..2.187 rows=3924.00 loops=3)
+                                            Buckets: 4096  Batches: 1  Memory Usage: 249kB
+                                            Buffers: shared hit=1464
+                                            ->  Seq Scan on users u  (cost=0.00..988.00 rows=3943 width=24) (actual time=0.013..1.932 rows=3924.00 loops=3)
+                                                  Filter: ((kyc_status)::text <> 'VERIFIED'::text)
+                                                  Rows Removed by Filter: 36076
+                                                  Buffers: shared hit=1464
+Planning:
+  Buffers: shared hit=287
+Planning Time: 0.478 ms
+Execution Time: 22.704 ms

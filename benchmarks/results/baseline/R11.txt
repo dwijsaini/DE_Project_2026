@@ -1,0 +1,39 @@
+=== R11 run 1 ===
+Sort  (cost=1062.48..1063.64 rows=463 width=16) (actual time=1.649..1.650 rows=51.00 loops=1)
+  Sort Key: expires_at
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=448
+  ->  Seq Scan on rewards  (cost=0.00..1041.99 rows=463 width=16) (actual time=1.557..1.638 rows=51.00 loops=1)
+        Filter: ((expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone) AND ((status)::text = 'UNSCRATCHED'::text))
+        Rows Removed by Filter: 39748
+        Buffers: shared hit=445
+Planning:
+  Buffers: shared hit=93
+Planning Time: 0.151 ms
+Execution Time: 1.667 ms
+=== R11 run 2 ===
+Sort  (cost=1062.48..1063.64 rows=463 width=16) (actual time=1.759..1.760 rows=51.00 loops=1)
+  Sort Key: expires_at
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=448
+  ->  Seq Scan on rewards  (cost=0.00..1041.99 rows=463 width=16) (actual time=1.668..1.747 rows=51.00 loops=1)
+        Filter: ((expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone) AND ((status)::text = 'UNSCRATCHED'::text))
+        Rows Removed by Filter: 39748
+        Buffers: shared hit=445
+Planning:
+  Buffers: shared hit=93
+Planning Time: 0.163 ms
+Execution Time: 1.779 ms
+=== R11 run 3 ===
+Sort  (cost=1062.48..1063.64 rows=463 width=16) (actual time=1.577..1.578 rows=51.00 loops=1)
+  Sort Key: expires_at
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=448
+  ->  Seq Scan on rewards  (cost=0.00..1041.99 rows=463 width=16) (actual time=1.490..1.568 rows=51.00 loops=1)
+        Filter: ((expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone) AND ((status)::text = 'UNSCRATCHED'::text))
+        Rows Removed by Filter: 39748
+        Buffers: shared hit=445
+Planning:
+  Buffers: shared hit=93
+Planning Time: 0.137 ms
+Execution Time: 1.593 ms
