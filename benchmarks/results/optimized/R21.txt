@@ -1,0 +1,45 @@
+=== R21 run 1 ===
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=2.236..2.239 rows=25.00 loops=1)
+  Buffers: shared hit=38
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=2.235..2.236 rows=25.00 loops=1)
+        Sort Key: merchant_name
+        Sort Method: top-N heapsort  Memory: 30kB
+        Buffers: shared hit=38
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.016..2.099 rows=300.00 loops=1)
+              Filter: (merchant_name ~~* '%chai%'::text)
+              Rows Removed by Filter: 2700
+              Buffers: shared hit=35
+Planning:
+  Buffers: shared hit=104
+Planning Time: 0.459 ms
+Execution Time: 2.260 ms
+=== R21 run 2 ===
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=2.153..2.156 rows=25.00 loops=1)
+  Buffers: shared hit=38
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=2.139..2.140 rows=25.00 loops=1)
+        Sort Key: merchant_name
+        Sort Method: top-N heapsort  Memory: 30kB
+        Buffers: shared hit=38
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.018..1.972 rows=300.00 loops=1)
+              Filter: (merchant_name ~~* '%chai%'::text)
+              Rows Removed by Filter: 2700
+              Buffers: shared hit=35
+Planning:
+  Buffers: shared hit=104
+Planning Time: 0.466 ms
+Execution Time: 2.182 ms
+=== R21 run 3 ===
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=2.142..2.146 rows=25.00 loops=1)
+  Buffers: shared hit=38
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=2.141..2.142 rows=25.00 loops=1)
+        Sort Key: merchant_name
+        Sort Method: top-N heapsort  Memory: 30kB
+        Buffers: shared hit=38
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.019..2.000 rows=300.00 loops=1)
+              Filter: (merchant_name ~~* '%chai%'::text)
+              Rows Removed by Filter: 2700
+              Buffers: shared hit=35
+Planning:
+  Buffers: shared hit=104
+Planning Time: 0.487 ms
+Execution Time: 2.178 ms
