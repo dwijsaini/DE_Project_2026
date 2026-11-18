@@ -23,7 +23,7 @@ In Checkpoint 3 (CP3), we targeted the performance and correctness bottlenecks i
 
 ### Headline Results
 
-- **Total Workload Execution Time:** Decreased from **4,851.489 ms** to **672.408 ms** (an overall **86.14% runtime reduction**, or **7.2× faster**).
+- **Total Workload Execution Time:** Decreased from **4,851.489 ms** to **679.402 ms** (an overall **86.00% runtime reduction**, or **7.14× faster**).
 - **Core Bottleneck (R19):** Reduced from **4,185.057 ms** to **2.796 ms** (a **99.93% reduction**, **1,496.8× faster**), transforming a 4-second dashboard stall into an instant response.
 - **Disk Spill Elimination (R09 & R23):** Completely eliminated a **17.8 MB disk spill** in R09 and a **14.2 MB disk spill** in R23 by providing pre-sorted index order for window aggregation and pagination.
 - **Critical Correctness Fix (R13):** Fixed the empty-result bug in the merchant success report, restoring the correct return of **450 inactive merchants** who have never received a payment.
@@ -67,7 +67,7 @@ Improvement percentage is calculated as `(Before - After) / Before * 100`. All t
 | **W03** | 2.696 | Scans rewards to find oldest qualifying card, then updates by PK. | Partial index `idx_rewards_unscratched_user_reward` satisfies `min(reward_id)` subquery via Index-Only Scan. | 0.368 | **86.35%** (7.3×) | ✅ |
 | **W04** | 2.622 | Scans rewards for expired, unscratched rows. | Partial index `idx_rewards_unscratched_expiry` pinpoints qualifying rows directly for update. | 0.618 | **76.43%** (4.2×) | ✅ |
 | **W05** | 3.718 | Scans bills for due unpaid rows past the cutoff. | Partial index `idx_bills_due_date` retrieves DUE bills directly via Bitmap Index Scan. | 1.989 | **46.50%** (1.9×) | ✅ |
-| **Total** | **4,851.489** | Sum of per-query baseline averages; dominated by R19. | Sum of per-query optimized averages. | **672.408** | **86.14%** (7.2× faster overall) | — |
+| **Total** | **4,851.489** | Sum of per-query baseline averages; dominated by R19. | Sum of per-query optimized averages. | **679.402** | **86.00%** (7.14× faster overall) | — |
 
 ---
 
@@ -483,7 +483,7 @@ Certain queries cannot be meaningfully sped up with B-tree indexing or standard 
 ## 9. Conclusion & Readiness for Checkpoint 4 (Large Dataset)
 
 The CP3 optimization phase achieved:
-- An **86.14% reduction in overall workload execution time** (from 4.85 seconds down to 0.67 seconds).
+- An **86.00% reduction in overall workload execution time** (from 4.85 seconds down to 0.68 seconds).
 - Elimination of major memory-to-disk external merge spills in R09 and R23.
 - Complete resolution of the NULL three-valued logic bug in R13.
 - Sub-millisecond latency for real-time customer and core payment paths (R01: 0.26 ms, R02: 0.07 ms, R03: 0.07 ms, R04: 0.06 ms, R10: 0.05 ms, R12: 0.05 ms, R14: 0.21 ms, W02: 0.63 ms, W03: 0.37 ms).
