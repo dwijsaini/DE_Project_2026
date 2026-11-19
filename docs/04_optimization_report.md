@@ -3,6 +3,8 @@
 **Author:** Gyanshi  
 **Run date:** 17 November 2026 · **Database:** `gpay_cp3` · **PostgreSQL:** 18.6 (Apple Silicon)  
 **Method:** Repository benchmark harness (`benchmarks/run_benchmark.sh`), `EXPLAIN (ANALYZE, BUFFERS)`, 3 runs per query with arithmetic mean reported. Write queries executed inside transactional `BEGIN; ... ROLLBACK;` blocks.  
+**Comparability note:** The CP2 baseline report records PostgreSQL 18.7 for `gpay_cp1`, while this CP3 run records PostgreSQL 18.6 on Apple Silicon. The reports do not establish a same-version, same-machine comparison, so before/after percentages below describe the submitted runs and should not be attributed solely to the SQL and indexes. Rerun both workloads on the same PostgreSQL version and machine for a controlled comparison.
+
 **Deliverables:**
 - Workload query file: [`sql/06_optimized_queries.sql`](../sql/06_optimized_queries.sql)
 - Workload index file: [`sql/05_indexes.sql`](../sql/05_indexes.sql)
@@ -23,7 +25,7 @@ In Checkpoint 3 (CP3), we targeted the performance and correctness bottlenecks i
 
 ### Headline Results
 
-- **Total Workload Execution Time:** Decreased from **4,851.489 ms** to **679.402 ms** (an overall **86.00% runtime reduction**, or **7.14× faster**).
+- **Total Workload Execution Time:** The submitted baseline averages sum to **4,851.489 ms** and the submitted optimized averages sum to **679.402 ms** (an observed **86.00% difference**, or **7.14×**). See the comparability note above before interpreting this as an optimization-only effect.
 - **Core Bottleneck (R19):** Reduced from **4,185.057 ms** to **2.796 ms** (a **99.93% reduction**, **1,496.8× faster**), transforming a 4-second dashboard stall into an instant response.
 - **Disk Spill Elimination (R09 & R23):** Completely eliminated a **17.8 MB disk spill** in R09 and a **14.2 MB disk spill** in R23 by providing pre-sorted index order for window aggregation and pagination.
 - **Critical Correctness Fix (R13):** Fixed the empty-result bug in the merchant success report, restoring the correct return of **450 inactive merchants** who have never received a payment.
@@ -33,7 +35,7 @@ In Checkpoint 3 (CP3), we targeted the performance and correctness bottlenecks i
 
 ## 2. Full 30-Query Optimization Table
 
-Improvement percentage is calculated as `(Before - After) / Before * 100`. All timings represent the arithmetic average of 3 consecutive runs measured under identical system conditions.
+Per-query percentage is calculated as `(Before - After) / Before * 100`. Each value is the arithmetic average of 3 runs in its respective benchmark report; the baseline and optimized environments are not confirmed to be identical.
 
 | Query | Before (ms) | Problem found in baseline plan | Optimization applied | After (ms) | Improvement | Same result? |
 |---|---:|---|---|---:|---:|:---:|
@@ -185,7 +187,7 @@ Improvement percentage is calculated as `(Before - After) / Before * 100`. All t
 
 ## 4. Output Equivalence Proofs
 
-To prove that rewritten queries produce identical results to the original queries without changing semantics, we executed two-way `EXCEPT ALL` queries and row count verifications against the production dataset:
+To compare rewritten queries with their originals, the team reports using two-way `EXCEPT ALL` queries and row counts against the loaded project seed dataset. The following is a schematic pattern: replace `orig` and `opt` with the complete original and optimized query bodies before running it.
 
 ```sql
 SELECT 'R01' AS query,
