@@ -28,12 +28,6 @@ CREATE INDEX idx_transactions_merchant_initiated
     ON gpay.transactions USING btree (merchant_id, initiated_at DESC)
     WHERE merchant_id IS NOT NULL;
 
--- R06, R15: successful payments over a global time range. initiated_at leads
--- to bound the June/day range before merchant joins and aggregation.
-CREATE INDEX idx_transactions_success_initiated_merchant
-    ON gpay.transactions USING btree (initiated_at, merchant_id)
-    WHERE status = 'SUCCESS' AND merchant_id IS NOT NULL;
-
 -- R19: repeated successful-count subquery per merchant; merchant_id leads for
 -- each correlated lookup and the partial condition keeps this index compact.
 CREATE INDEX idx_transactions_success_merchant

@@ -482,6 +482,10 @@ Certain queries cannot be meaningfully sped up with B-tree indexing or standard 
 
 ## 9. Conclusion & Readiness for Checkpoint 4 (Large Dataset)
 
+### Follow-up index review (20 November 2026)
+
+Inspection of all 30 committed optimized raw plans found no plan using `idx_transactions_success_initiated_merchant`. For successful date-range queries, PostgreSQL chose the existing `idx_transactions_initiated_desc` instead. The unused partial index has therefore been removed from the current `sql/05_indexes.sql` to avoid unproven storage and write-maintenance cost. The optimized timings and index-size table above are from the earlier CP3 run with that index present; they are not measurements of the reduced index set. Re-run the optimized benchmark and `pg_relation_size()` inventory after applying the current index file before treating them as current-state results. No post-removal timing is claimed here.
+
 The CP3 optimization phase achieved:
 - An **86.00% reduction in overall workload execution time** (from 4.85 seconds down to 0.68 seconds).
 - Elimination of major memory-to-disk external merge spills in R09 and R23.
