@@ -2,6 +2,8 @@
 
 > **Status: measurement draft.** The large-data archive is not present in this checkout, so no large-workload timings, storage sizes, growth ratios, or partitioning plans are reported as measured. Fill the results sections after faculty's `large_data.zip` is available.
 
+> The large-workload `summary.csv` currently contains `PENDING` status values only; it is not benchmark output. The benchmark command overwrites it after a real run. No large-data raw plans are available yet.
+
 ## 1. Measurement setup
 
 The CP2 seed database contains 250,468 transactions. The assignment describes a later dataset with about 20 times the rows. These are input-size facts, not CP4 measurements.
