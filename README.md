@@ -729,3 +729,119 @@ SET status = 'OVERDUE'
 WHERE status = 'DUE'
   AND due_date < '2026-07-05';
 ```
+
+---
+
+## Reproducing the benchmark results
+
+This section explains how to recreate the CP3 optimization benchmark from scratch on any machine with PostgreSQL installed.
+
+### Prerequisites
+
+- **PostgreSQL 14 or newer** (tested on PostgreSQL 18.6 via [Postgres.app](https://postgresapp.com/) on macOS)
+- **`psql`** command-line client (bundled with PostgreSQL)
+- **`bash`** (the benchmark script uses bash-specific features such as arrays)
+- **`unzip`** to extract the seed data
+
+---
+
+### Step 1: Clone and set up the repository
+
+```bash
+git clone https://github.com/dwijsaini/DE_Project_2026.git
+cd DE_Project_2026
+unzip seed_data.zip          # extracts seed_data/ — do not commit these CSVs
+```
+
+---
+
+### Step 2: Create and load the database
+
+```bash
+createdb gpay_cp3
+psql -d gpay_cp3 -f sql/01_schema.sql
+psql -d gpay_cp3 -f sql/02_load_data.sql
+```
+
+After this step, `gpay_cp3` will contain the full 250,468-transaction seed dataset across all tables (`transactions`, `users`, `vpas`, `bank_accounts`, `merchants`, `rewards`, `bill_payments`, `disputes`, `upi_ref_lookup`).
+
+---
+
+### Step 3: Apply the CP3 indexes
+
+```bash
+psql -d gpay_cp3 -f sql/05_indexes.sql
+```
+
+This creates all 15 B-tree indexes described in `docs/04_optimization_report.md` (Section 7). Run `VACUUM ANALYZE;` afterwards if you want the planner statistics to fully reflect the new indexes before benchmarking:
+
+```bash
+psql -d gpay_cp3 -c "VACUUM ANALYZE;"
+```
+
+---
+
+### Step 4: Run the baseline benchmark (pre-optimization)
+
+```bash
+./benchmarks/run_benchmark.sh gpay_cp3 baseline
+```
+
+This runs all 30 queries from `queries/workload_30.sql` **without** the optimized rewrites (the original query text), 3 times each, using `EXPLAIN (ANALYZE, BUFFERS)`. It writes:
+
+- `benchmarks/results/baseline/summary.csv` — per-query avg / median / min / max execution times and scan node types
+- `benchmarks/results/baseline/<ID>.txt` — raw `EXPLAIN` plan output for each query (e.g. `R01.txt`, `W02.txt`)
+
+> **Note:** To reproduce the exact pre-optimization baseline, the index creation step (Step 3) should be skipped before running this phase. The baseline results already committed in this repository (`benchmarks/results/baseline/`) were captured on the un-indexed schema.
+
+---
+
+### Step 5: Run the optimized benchmark
+
+```bash
+./benchmarks/run_benchmark.sh gpay_cp3 optimized 3 sql/06_optimized_queries.sql
+```
+
+This runs all 30 queries from `sql/06_optimized_queries.sql` (Gyanshi's optimized rewrites), 3 times each, against the indexed schema. It writes:
+
+- `benchmarks/results/optimized/summary.csv` — per-query optimized timings
+- `benchmarks/results/optimized/<ID>.txt` — raw `EXPLAIN` plans for the optimized queries
+
+> **Write queries (W01–W05)** are executed inside `BEGIN; ... ROLLBACK;` blocks by the script, so your database data is never permanently modified during benchmarking.
+
+---
+
+### Step 6: View the benchmark summary
+
+```bash
+cat benchmarks/results/baseline/summary.csv
+cat benchmarks/results/optimized/summary.csv
+```
+
+For a side-by-side comparison of all 30 queries, see `docs/04_optimization_report.md` (Section 2: Full 30-Query Optimization Table).
+
+---
+
+### Step 7: CP4 large dataset (when released)
+
+When faculty release `large_data.zip`, the same benchmark harness applies:
+
+```bash
+unzip large_data.zip -d large_data/
+psql -d gpay_cp3 -f sql/02_load_data.sql   # re-run with large data loader
+psql -d gpay_cp3 -f sql/08_partitioning.sql
+./benchmarks/run_benchmark.sh gpay_cp3 large 3 sql/06_optimized_queries.sql
+```
+
+Results will be written to `benchmarks/results/large/`. See `docs/06_cp4_large_data_notes.md` for the current status and projected problem queries at 20× scale.
+
+---
+
+### What the benchmark script generates
+
+| File / Directory | Description |
+|---|---|
+| `benchmarks/results/<phase>/summary.csv` | One row per query: `query_id, type, avg_ms, median_ms, min_ms, max_ms, scan_nodes` |
+| `benchmarks/results/<phase>/<ID>.txt` | Raw `EXPLAIN (ANALYZE, BUFFERS)` output for each of 3 benchmark runs |
+
+The script reads connection settings from standard libpq environment variables (`PGHOST`, `PGPORT`, `PGUSER`). No password is needed if your PostgreSQL install uses trust or peer authentication for local connections (default on macOS with Postgres.app).
