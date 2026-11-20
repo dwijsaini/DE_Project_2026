@@ -11,6 +11,18 @@
 
 ---
 
+### Benchmark Environment
+
+| Property | Value |
+|---|---|
+| **PostgreSQL version** | PostgreSQL 18.6 (Postgres.app) on aarch64-apple-darwin23.6.0 |
+| **Compiler** | Apple clang version 15.0.0 (clang-1500.3.9.4), 64-bit |
+| **Hardware** | Apple MacBook — Apple M4 |
+| **OS** | macOS (Darwin arm64) |
+| **Database name** | `gpay_cp3` |
+| **Benchmark harness** | `benchmarks/run_benchmark.sh`, 3 runs per query |
+
+
 ## 1. Executive Summary
 
 In Checkpoint 3 (CP3), we targeted the performance and correctness bottlenecks identified during the CP2 baseline benchmark across all 30 queries. The optimization effort combined two complementary strategies:

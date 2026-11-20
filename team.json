@@ -22,6 +22,6 @@
       "github": "RajaChaudhary99"
     }
   ],
-  "postgres_version": "",
-  "laptop_used_for_benchmarks": ""
+  "postgres_version": "PostgreSQL 18.6 (Postgres.app) on aarch64-apple-darwin23.6.0, compiled by Apple clang version 15.0.0 (clang-1500.3.9.4), 64-bit",
+  "laptop_used_for_benchmarks": "Apple MacBook — Apple M4, macOS (Darwin arm64)"
 }
