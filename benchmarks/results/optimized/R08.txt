@@ -1,69 +1,66 @@
 === R08 run 1 ===
-Sort  (cost=14688.11..14773.95 rows=34339 width=65) (actual time=45.771..45.773 rows=13.00 loops=1)
+Sort  (cost=26434.00..26521.33 rows=34930 width=65) (actual time=263.398..263.400 rows=13.00 loops=1)
   Sort Key: (count(DISTINCT payer_vpa)) DESC
   Sort Method: quicksort  Memory: 25kB
-  Buffers: shared hit=147 read=1121
-  ->  GroupAggregate  (cost=0.79..12101.08 rows=34339 width=65) (actual time=18.226..45.764 rows=13.00 loops=1)
+  Buffers: shared hit=4497, temp read=864 written=866
+  ->  GroupAggregate  (cost=20829.08..23798.15 rows=34930 width=65) (actual time=224.835..263.380 rows=13.00 loops=1)
         Group Key: payee_vpa, ((initiated_at)::date)
         Filter: (count(DISTINCT payer_vpa) >= 5)
         Rows Removed by Filter: 102266
-        Buffers: shared hit=144 read=1121
-        ->  Incremental Sort  (cost=0.79..9439.81 rows=103017 width=55) (actual time=0.064..26.815 rows=102742.00 loops=1)
+        Buffers: shared hit=4494, temp read=864 written=866
+        ->  Sort  (cost=20829.08..21091.05 rows=104791 width=55) (actual time=198.781..221.560 rows=102742.00 loops=1)
               Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
-              Presorted Key: payee_vpa
-              Full-sort Groups: 3119  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
-              Buffers: shared hit=144 read=1121
-              ->  Index Only Scan using idx_txn_p2p_payee_time on transactions  (cost=0.42..6543.21 rows=103017 width=55) (actual time=0.038..10.083 rows=102742.00 loops=1)
-                    Heap Fetches: 160
-                    Index Searches: 1
-                    Buffers: shared hit=138 read=1121
+              Sort Method: external merge  Disk: 6912kB
+              Buffers: shared hit=4494, temp read=864 written=866
+              ->  Seq Scan on transactions  (cost=0.00..8507.00 rows=104791 width=55) (actual time=0.031..47.677 rows=102742.00 loops=1)
+                    Filter: (((txn_type)::text = 'P2P'::text) AND ((status)::text = 'SUCCESS'::text))
+                    Rows Removed by Filter: 147726
+                    Buffers: shared hit=4488
 Planning:
-  Buffers: shared hit=627
-Planning Time: 0.744 ms
-Execution Time: 45.796 ms
+  Buffers: shared hit=350
+Planning Time: 1.422 ms
+Execution Time: 265.616 ms
 === R08 run 2 ===
-Sort  (cost=14688.11..14773.95 rows=34339 width=65) (actual time=44.774..44.774 rows=13.00 loops=1)
+Sort  (cost=26434.00..26521.33 rows=34930 width=65) (actual time=253.805..253.806 rows=13.00 loops=1)
   Sort Key: (count(DISTINCT payer_vpa)) DESC
   Sort Method: quicksort  Memory: 25kB
-  Buffers: shared hit=1268
-  ->  GroupAggregate  (cost=0.79..12101.08 rows=34339 width=65) (actual time=17.724..44.768 rows=13.00 loops=1)
+  Buffers: shared hit=4497, temp read=864 written=866
+  ->  GroupAggregate  (cost=20829.08..23798.15 rows=34930 width=65) (actual time=215.724..253.788 rows=13.00 loops=1)
         Group Key: payee_vpa, ((initiated_at)::date)
         Filter: (count(DISTINCT payer_vpa) >= 5)
         Rows Removed by Filter: 102266
-        Buffers: shared hit=1265
-        ->  Incremental Sort  (cost=0.79..9439.81 rows=103017 width=55) (actual time=0.049..25.423 rows=102742.00 loops=1)
+        Buffers: shared hit=4494, temp read=864 written=866
+        ->  Sort  (cost=20829.08..21091.05 rows=104791 width=55) (actual time=191.083..213.331 rows=102742.00 loops=1)
               Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
-              Presorted Key: payee_vpa
-              Full-sort Groups: 3119  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
-              Buffers: shared hit=1265
-              ->  Index Only Scan using idx_txn_p2p_payee_time on transactions  (cost=0.42..6543.21 rows=103017 width=55) (actual time=0.027..8.712 rows=102742.00 loops=1)
-                    Heap Fetches: 160
-                    Index Searches: 1
-                    Buffers: shared hit=1259
+              Sort Method: external merge  Disk: 6912kB
+              Buffers: shared hit=4494, temp read=864 written=866
+              ->  Seq Scan on transactions  (cost=0.00..8507.00 rows=104791 width=55) (actual time=0.030..43.944 rows=102742.00 loops=1)
+                    Filter: (((txn_type)::text = 'P2P'::text) AND ((status)::text = 'SUCCESS'::text))
+                    Rows Removed by Filter: 147726
+                    Buffers: shared hit=4488
 Planning:
-  Buffers: shared hit=627
-Planning Time: 0.665 ms
-Execution Time: 44.795 ms
+  Buffers: shared hit=350
+Planning Time: 1.063 ms
+Execution Time: 256.585 ms
 === R08 run 3 ===
-Sort  (cost=14688.11..14773.95 rows=34339 width=65) (actual time=45.543..45.544 rows=13.00 loops=1)
+Sort  (cost=26434.00..26521.33 rows=34930 width=65) (actual time=253.258..253.260 rows=13.00 loops=1)
   Sort Key: (count(DISTINCT payer_vpa)) DESC
   Sort Method: quicksort  Memory: 25kB
-  Buffers: shared hit=1268
-  ->  GroupAggregate  (cost=0.79..12101.08 rows=34339 width=65) (actual time=18.747..45.537 rows=13.00 loops=1)
+  Buffers: shared hit=4497, temp read=864 written=866
+  ->  GroupAggregate  (cost=20829.08..23798.15 rows=34930 width=65) (actual time=214.531..253.246 rows=13.00 loops=1)
         Group Key: payee_vpa, ((initiated_at)::date)
         Filter: (count(DISTINCT payer_vpa) >= 5)
         Rows Removed by Filter: 102266
-        Buffers: shared hit=1265
-        ->  Incremental Sort  (cost=0.79..9439.81 rows=103017 width=55) (actual time=0.047..25.995 rows=102742.00 loops=1)
+        Buffers: shared hit=4494, temp read=864 written=866
+        ->  Sort  (cost=20829.08..21091.05 rows=104791 width=55) (actual time=189.993..212.574 rows=102742.00 loops=1)
               Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
-              Presorted Key: payee_vpa
-              Full-sort Groups: 3119  Sort Method: quicksort  Average Memory: 28kB  Peak Memory: 28kB
-              Buffers: shared hit=1265
-              ->  Index Only Scan using idx_txn_p2p_payee_time on transactions  (cost=0.42..6543.21 rows=103017 width=55) (actual time=0.025..8.962 rows=102742.00 loops=1)
-                    Heap Fetches: 160
-                    Index Searches: 1
-                    Buffers: shared hit=1259
+              Sort Method: external merge  Disk: 6912kB
+              Buffers: shared hit=4494, temp read=864 written=866
+              ->  Seq Scan on transactions  (cost=0.00..8507.00 rows=104791 width=55) (actual time=0.031..43.542 rows=102742.00 loops=1)
+                    Filter: (((txn_type)::text = 'P2P'::text) AND ((status)::text = 'SUCCESS'::text))
+                    Rows Removed by Filter: 147726
+                    Buffers: shared hit=4488
 Planning:
-  Buffers: shared hit=627
-Planning Time: 0.685 ms
-Execution Time: 45.565 ms
+  Buffers: shared hit=350
+Planning Time: 1.092 ms
+Execution Time: 256.349 ms

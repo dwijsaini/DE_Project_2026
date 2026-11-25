@@ -1,86 +1,76 @@
--- Phase 4/5 workload indexes for the Google Pay database.
--- Safe to rerun. Run after loading data, then run ANALYZE.
-SET search_path TO gpay;
+-- CP3 indexes selected from docs/03_baseline_timings.md and the raw baseline
+-- plans in benchmarks/results/baseline/. Run after loading the gpay schema.
+-- These are workload indexes only; do not alter data or server settings here.
 
--- User-to-VPA lookups and VPA-to-account lookups.
-CREATE INDEX IF NOT EXISTS idx_vpas_user_vpa
-    ON vpas (user_id, vpa) INCLUDE (account_id, is_active);
-CREATE INDEX IF NOT EXISTS idx_vpas_account
-    ON vpas (account_id) INCLUDE (vpa, is_active);
-CREATE INDEX IF NOT EXISTS idx_bank_accounts_user_primary
-    ON bank_accounts (user_id, is_primary DESC)
-    INCLUDE (account_id, bank_name, account_last4);
+-- R01, R03, R14, R18, R22, R25: user-to-VPA filters/joins (user_id first
+-- because each query starts from one user's VPAs; vpa also covers the join).
+CREATE INDEX idx_vpas_user_id_vpa
+    ON gpay.vpas USING btree (user_id, vpa);
 
--- Transaction history, user spending, daily payment limits, and bank health.
-CREATE INDEX IF NOT EXISTS idx_txn_payer_time
-    ON transactions (payer_vpa, initiated_at DESC)
-    INCLUDE (txn_id, upi_ref, payee_vpa, amount, status);
-CREATE INDEX IF NOT EXISTS idx_txn_payee_time
-    ON transactions (payee_vpa, initiated_at DESC)
-    INCLUDE (txn_id, upi_ref, payer_vpa, amount, status);
-CREATE INDEX IF NOT EXISTS idx_txn_payer_success_time
-    ON transactions (payer_vpa, initiated_at)
-    INCLUDE (merchant_id, amount) WHERE status = 'SUCCESS';
-CREATE INDEX IF NOT EXISTS idx_txn_payer_daily_limit
-    ON transactions (payer_vpa, initiated_at)
-    INCLUDE (amount, status) WHERE status IN ('SUCCESS', 'PENDING');
-CREATE INDEX IF NOT EXISTS idx_txn_pending_time
-    ON transactions (initiated_at)
-    INCLUDE (txn_id, upi_ref, payer_vpa, amount) WHERE status = 'PENDING';
-CREATE INDEX IF NOT EXISTS idx_txn_pending_id
-    ON transactions (txn_id) WHERE status = 'PENDING';
-CREATE INDEX IF NOT EXISTS idx_txn_merchant_success_time
-    ON transactions (merchant_id, initiated_at)
-    INCLUDE (amount) WHERE status = 'SUCCESS';
-CREATE INDEX IF NOT EXISTS idx_txn_success_time_merchant
-    ON transactions (initiated_at, merchant_id)
-    INCLUDE (amount) WHERE status = 'SUCCESS';
-CREATE INDEX IF NOT EXISTS idx_txn_failed_time
-    ON transactions (initiated_at)
-    INCLUDE (payer_vpa, failure_code) WHERE status = 'FAILED';
-CREATE INDEX IF NOT EXISTS idx_txn_p2p_payee_time
-    ON transactions (payee_vpa, initiated_at)
-    INCLUDE (payer_vpa, amount) WHERE txn_type = 'P2P' AND status = 'SUCCESS';
-CREATE INDEX IF NOT EXISTS idx_txn_success_pair_time
-    ON transactions (payer_vpa, payee_vpa, initiated_at)
-    INCLUDE (txn_id, amount) WHERE status = 'SUCCESS';
-CREATE INDEX IF NOT EXISTS idx_txn_merchant
-    ON transactions (merchant_id) WHERE merchant_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_txn_p2m_merchant
-    ON transactions (merchant_id) INCLUDE (status) WHERE txn_type = 'P2M';
-CREATE INDEX IF NOT EXISTS idx_txn_merchant_time_status
-    ON transactions (merchant_id, initiated_at) INCLUDE (status)
+-- R01: history by payer or payee, newest first. Separate indexes let the OR
+-- predicate use bitmap paths; initiated_at DESC also supplies the sort order.
+CREATE INDEX idx_transactions_payer_vpa_initiated_desc
+    ON gpay.transactions USING btree (payer_vpa, initiated_at DESC);
+
+CREATE INDEX idx_transactions_payee_vpa_initiated_desc
+    ON gpay.transactions USING btree (payee_vpa, initiated_at DESC);
+
+-- R04: pending reconciliation rows in initiation order; the partial predicate
+-- keeps successful/terminal rows out of this relatively narrow index.
+CREATE INDEX idx_transactions_pending_initiated
+    ON gpay.transactions USING btree (initiated_at)
+    WHERE status = 'PENDING';
+
+-- R05, R13, R19: merchant/time access. merchant_id leads for per-merchant
+-- lookups and the R13 anti-membership check; initiated_at narrows time ranges
+-- and supplies R19's last_payment_at maximum.
+CREATE INDEX idx_transactions_merchant_initiated
+    ON gpay.transactions USING btree (merchant_id, initiated_at DESC)
     WHERE merchant_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_txn_time_status
-    ON transactions (initiated_at) INCLUDE (status);
-CREATE INDEX IF NOT EXISTS idx_txn_completed_time
-    ON transactions (initiated_at) INCLUDE (completed_at, payer_vpa)
-    WHERE completed_at IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_txn_ops_page
-    ON transactions (initiated_at DESC, txn_id DESC)
-    INCLUDE (upi_ref, txn_type, amount, status);
 
--- Reward and bill lookups, notifications, and batch updates.
-CREATE INDEX IF NOT EXISTS idx_rewards_user_unscratched_expiry
-    ON rewards (user_id, expires_at)
-    INCLUDE (reward_id, reward_type, issued_at) WHERE status = 'UNSCRATCHED';
-CREATE INDEX IF NOT EXISTS idx_rewards_unscratched_expiry
-    ON rewards (expires_at) INCLUDE (reward_id, user_id)
+-- R19: repeated successful-count subquery per merchant; merchant_id leads for
+-- each correlated lookup and the partial condition keeps this index compact.
+CREATE INDEX idx_transactions_success_merchant
+    ON gpay.transactions USING btree (merchant_id)
+    WHERE status = 'SUCCESS' AND merchant_id IS NOT NULL;
+
+-- R09: the baseline window sort spills 17.8 MB. Match its partition keys and
+-- ordering key; only SUCCESS rows are needed by this query.
+CREATE INDEX idx_transactions_success_payer_payee_initiated
+    ON gpay.transactions USING btree (payer_vpa, payee_vpa, initiated_at)
+    WHERE status = 'SUCCESS';
+
+-- R23: newest-first transaction page; the baseline full sort spills to disk.
+CREATE INDEX idx_transactions_initiated_desc
+    ON gpay.transactions USING btree (initiated_at DESC);
+
+-- W02: the update chooses the smallest txn_id among pending rows. The partial
+-- index makes that MIN lookup start at the first pending identifier.
+CREATE INDEX idx_transactions_pending_txn_id
+    ON gpay.transactions USING btree (txn_id)
+    WHERE status = 'PENDING';
+
+-- R10, R11, W03, W04: active unscratched rewards. Expiry-first supports both
+-- expiring-reward scans; user_id first narrows R10, and reward_id supports the
+-- oldest-card lookup in W03. Partial predicates exclude settled rewards.
+CREATE INDEX idx_rewards_unscratched_user_expiry
+    ON gpay.rewards USING btree (user_id, expires_at)
     WHERE status = 'UNSCRATCHED';
-CREATE INDEX IF NOT EXISTS idx_rewards_unscratched_user_id
-    ON rewards (user_id, reward_id) WHERE status = 'UNSCRATCHED';
-CREATE INDEX IF NOT EXISTS idx_bills_due_user_date
-    ON bill_payments (user_id, due_date)
-    INCLUDE (bill_id, biller_name, amount) WHERE status = 'DUE';
-CREATE INDEX IF NOT EXISTS idx_bills_due_date
-    ON bill_payments (due_date) WHERE status = 'DUE';
 
--- Open-dispute SLA checks and merchant name substring searches.
-CREATE INDEX IF NOT EXISTS idx_disputes_open_raised
-    ON disputes (raised_at) INCLUDE (dispute_id, txn_id, reason)
-    WHERE status = 'OPEN';
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE INDEX IF NOT EXISTS idx_merchants_name_trgm
-    ON merchants USING GIN (merchant_name gin_trgm_ops);
+CREATE INDEX idx_rewards_unscratched_expiry
+    ON gpay.rewards USING btree (expires_at)
+    WHERE status = 'UNSCRATCHED';
 
-ANALYZE;
+CREATE INDEX idx_rewards_unscratched_user_reward
+    ON gpay.rewards USING btree (user_id, reward_id)
+    WHERE status = 'UNSCRATCHED';
+
+-- R12, W05: unpaid bill filtering. user_id leads for R12; the W05 partial
+-- index uses due_date to find only DUE bills before the cutoff.
+CREATE INDEX idx_bills_due_user_date
+    ON gpay.bill_payments USING btree (user_id, due_date)
+    WHERE status = 'DUE';
+
+CREATE INDEX idx_bills_due_date
+    ON gpay.bill_payments USING btree (due_date)
+    WHERE status = 'DUE';

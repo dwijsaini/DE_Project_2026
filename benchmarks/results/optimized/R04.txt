@@ -1,42 +1,27 @@
 === R04 run 1 ===
-Sort  (cost=21.00..21.31 rows=125 width=55) (actual time=0.046..0.048 rows=120.00 loops=1)
-  Sort Key: initiated_at
-  Sort Method: quicksort  Memory: 33kB
-  Buffers: shared hit=6 read=1
-  ->  Index Scan using idx_txn_pending_id on transactions  (cost=0.14..16.64 rows=125 width=55) (actual time=0.013..0.027 rows=120.00 loops=1)
-        Filter: (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval))
-        Rows Removed by Filter: 5
-        Index Searches: 1
-        Buffers: shared hit=3 read=1
+Index Scan using idx_transactions_pending_initiated on transactions  (cost=0.14..19.92 rows=142 width=55) (actual time=0.029..0.049 rows=120.00 loops=1)
+  Index Cond: (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval))
+  Index Searches: 1
+  Buffers: shared hit=4
 Planning:
-  Buffers: shared hit=577
-Planning Time: 0.793 ms
-Execution Time: 0.060 ms
+  Buffers: shared hit=307
+Planning Time: 1.392 ms
+Execution Time: 0.072 ms
 === R04 run 2 ===
-Sort  (cost=21.00..21.31 rows=125 width=55) (actual time=0.051..0.054 rows=120.00 loops=1)
-  Sort Key: initiated_at
-  Sort Method: quicksort  Memory: 33kB
-  Buffers: shared hit=7
-  ->  Index Scan using idx_txn_pending_id on transactions  (cost=0.14..16.64 rows=125 width=55) (actual time=0.006..0.022 rows=120.00 loops=1)
-        Filter: (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval))
-        Rows Removed by Filter: 5
-        Index Searches: 1
-        Buffers: shared hit=4
+Index Scan using idx_transactions_pending_initiated on transactions  (cost=0.14..19.92 rows=142 width=55) (actual time=0.012..0.030 rows=120.00 loops=1)
+  Index Cond: (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval))
+  Index Searches: 1
+  Buffers: shared hit=4
 Planning:
-  Buffers: shared hit=577
-Planning Time: 0.838 ms
-Execution Time: 0.066 ms
+  Buffers: shared hit=307
+Planning Time: 0.997 ms
+Execution Time: 0.054 ms
 === R04 run 3 ===
-Sort  (cost=21.00..21.31 rows=125 width=55) (actual time=0.039..0.041 rows=120.00 loops=1)
-  Sort Key: initiated_at
-  Sort Method: quicksort  Memory: 33kB
-  Buffers: shared hit=7
-  ->  Index Scan using idx_txn_pending_id on transactions  (cost=0.14..16.64 rows=125 width=55) (actual time=0.005..0.018 rows=120.00 loops=1)
-        Filter: (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval))
-        Rows Removed by Filter: 5
-        Index Searches: 1
-        Buffers: shared hit=4
+Index Scan using idx_transactions_pending_initiated on transactions  (cost=0.14..19.92 rows=142 width=55) (actual time=0.012..0.030 rows=120.00 loops=1)
+  Index Cond: (initiated_at < ('2026-06-30 23:59:00+05:30'::timestamp with time zone - '00:15:00'::interval))
+  Index Searches: 1
+  Buffers: shared hit=4
 Planning:
-  Buffers: shared hit=577
-Planning Time: 0.801 ms
+  Buffers: shared hit=307
+Planning Time: 0.983 ms
 Execution Time: 0.053 ms
