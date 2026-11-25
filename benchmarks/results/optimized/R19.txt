@@ -1,0 +1,72 @@
+=== R19 run 1 ===
+Sort  (cost=6714.42..6715.03 rows=243 width=39) (actual time=11.545..11.550 rows=239.00 loops=1)
+  Sort Key: (COALESCE((count(*) FILTER (WHERE ((transactions.status)::text = 'SUCCESS'::text))), '0'::bigint)) DESC
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=224 read=702 written=112
+  ->  Merge Left Join  (cost=0.70..6704.79 rows=243 width=39) (actual time=0.226..11.512 rows=239.00 loops=1)
+        Merge Cond: (m.merchant_id = transactions.merchant_id)
+        Buffers: shared hit=221 read=702 written=112
+        ->  Index Scan using merchants_pkey on merchants m  (cost=0.28..134.78 rows=243 width=23) (actual time=0.006..0.571 rows=239.00 loops=1)
+              Filter: (is_verified AND (city_id = 1))
+              Rows Removed by Filter: 2761
+              Index Searches: 1
+              Buffers: shared hit=38 read=7 written=1
+        ->  GroupAggregate  (cost=0.42..6535.62 rows=2538 width=20) (actual time=0.157..10.866 rows=2550.00 loops=1)
+              Group Key: transactions.merchant_id
+              Buffers: shared hit=183 read=695 written=111
+              ->  Index Only Scan using idx_txn_merchant_time_status on transactions  (cost=0.42..5112.71 rows=139753 width=19) (actual time=0.039..6.136 rows=139887.00 loops=1)
+                    Heap Fetches: 210
+                    Index Searches: 1
+                    Buffers: shared hit=183 read=695 written=111
+Planning:
+  Buffers: shared hit=593
+Planning Time: 0.789 ms
+Execution Time: 11.581 ms
+=== R19 run 2 ===
+Sort  (cost=6714.42..6715.03 rows=243 width=39) (actual time=9.630..9.634 rows=239.00 loops=1)
+  Sort Key: (COALESCE((count(*) FILTER (WHERE ((transactions.status)::text = 'SUCCESS'::text))), '0'::bigint)) DESC
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=926
+  ->  Merge Left Join  (cost=0.70..6704.79 rows=243 width=39) (actual time=0.171..9.600 rows=239.00 loops=1)
+        Merge Cond: (m.merchant_id = transactions.merchant_id)
+        Buffers: shared hit=923
+        ->  Index Scan using merchants_pkey on merchants m  (cost=0.28..134.78 rows=243 width=23) (actual time=0.005..0.194 rows=239.00 loops=1)
+              Filter: (is_verified AND (city_id = 1))
+              Rows Removed by Filter: 2761
+              Index Searches: 1
+              Buffers: shared hit=45
+        ->  GroupAggregate  (cost=0.42..6535.62 rows=2538 width=20) (actual time=0.117..9.336 rows=2550.00 loops=1)
+              Group Key: transactions.merchant_id
+              Buffers: shared hit=878
+              ->  Index Only Scan using idx_txn_merchant_time_status on transactions  (cost=0.42..5112.71 rows=139753 width=19) (actual time=0.025..4.876 rows=139887.00 loops=1)
+                    Heap Fetches: 210
+                    Index Searches: 1
+                    Buffers: shared hit=878
+Planning:
+  Buffers: shared hit=593
+Planning Time: 0.742 ms
+Execution Time: 9.661 ms
+=== R19 run 3 ===
+Sort  (cost=6714.42..6715.03 rows=243 width=39) (actual time=10.030..10.034 rows=239.00 loops=1)
+  Sort Key: (COALESCE((count(*) FILTER (WHERE ((transactions.status)::text = 'SUCCESS'::text))), '0'::bigint)) DESC
+  Sort Method: quicksort  Memory: 38kB
+  Buffers: shared hit=926
+  ->  Merge Left Join  (cost=0.70..6704.79 rows=243 width=39) (actual time=0.177..9.998 rows=239.00 loops=1)
+        Merge Cond: (m.merchant_id = transactions.merchant_id)
+        Buffers: shared hit=923
+        ->  Index Scan using merchants_pkey on merchants m  (cost=0.28..134.78 rows=243 width=23) (actual time=0.005..0.192 rows=239.00 loops=1)
+              Filter: (is_verified AND (city_id = 1))
+              Rows Removed by Filter: 2761
+              Index Searches: 1
+              Buffers: shared hit=45
+        ->  GroupAggregate  (cost=0.42..6535.62 rows=2538 width=20) (actual time=0.120..9.743 rows=2550.00 loops=1)
+              Group Key: transactions.merchant_id
+              Buffers: shared hit=878
+              ->  Index Only Scan using idx_txn_merchant_time_status on transactions  (cost=0.42..5112.71 rows=139753 width=19) (actual time=0.024..4.889 rows=139887.00 loops=1)
+                    Heap Fetches: 210
+                    Index Searches: 1
+                    Buffers: shared hit=878
+Planning:
+  Buffers: shared hit=593
+Planning Time: 0.722 ms
+Execution Time: 10.063 ms

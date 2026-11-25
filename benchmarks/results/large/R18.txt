@@ -1,0 +1,138 @@
+=== R18 run 1 ===
+Sort  (cost=122363.94..122430.54 rows=26640 width=56) (actual time=539.585..542.750 rows=57984.00 loops=1)
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: external merge  Disk: 2472kB
+  Buffers: shared hit=593020 read=56818 written=3, temp read=2633 written=2640
+  ->  Finalize GroupAggregate  (cost=93174.83..120405.73 rows=26640 width=56) (actual time=481.703..527.685 rows=57984.00 loops=1)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Rows Removed by Filter: 21742
+        Buffers: shared hit=593017 read=56818 written=3, temp read=2324 written=2330
+        ->  Gather Merge  (cost=93174.83..117768.37 rows=191808 width=56) (actual time=481.698..507.568 rows=79726.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=593017 read=56818 written=3, temp read=2324 written=2330
+              ->  Partial GroupAggregate  (cost=92174.81..94628.94 rows=79920 width=56) (actual time=479.925..501.111 rows=26575.33 loops=3)
+                    Group Key: u.user_id
+                    Buffers: shared hit=593017 read=56818 written=3, temp read=2324 written=2330
+                    ->  Sort  (cost=92174.81..92659.85 rows=194018 width=30) (actual time=479.913..486.400 rows=154883.67 loops=3)
+                          Sort Key: u.user_id
+                          Sort Method: external merge  Disk: 6288kB
+                          Buffers: shared hit=593017 read=56818 written=3, temp read=2324 written=2330
+                          Worker 0:  Sort Method: external merge  Disk: 6248kB
+                          Worker 1:  Sort Method: external merge  Disk: 6056kB
+                          ->  Nested Loop  (cost=14391.47..70489.87 rows=194018 width=30) (actual time=17.268..459.603 rows=154883.67 loops=3)
+                                Buffers: shared hit=593003 read=56818 written=3
+                                ->  Parallel Hash Join  (cost=14390.92..30194.03 rows=44400 width=50) (actual time=16.868..59.215 rows=35452.00 loops=3)
+                                      Hash Cond: (v.user_id = u.user_id)
+                                      Buffers: shared read=20000
+                                      ->  Parallel Seq Scan on vpas v  (cost=0.00..14636.44 rows=444444 width=30) (actual time=0.056..10.473 rows=355555.33 loops=3)
+                                            Buffers: shared read=10192
+                                      ->  Parallel Hash  (cost=13974.67..13974.67 rows=33300 width=24) (actual time=16.766..16.766 rows=26653.33 loops=3)
+                                            Buckets: 131072  Batches: 1  Memory Usage: 5728kB
+                                            Buffers: shared read=9808
+                                            ->  Parallel Seq Scan on users u  (cost=0.00..13974.67 rows=33300 width=24) (actual time=0.057..14.111 rows=26653.33 loops=3)
+                                                  Filter: ((kyc_status)::text <> 'VERIFIED'::text)
+                                                  Rows Removed by Filter: 240013
+                                                  Buffers: shared read=9808
+                                ->  Index Only Scan using idx_txn_payer_success_time on transactions t  (cost=0.56..0.84 rows=7 width=31) (actual time=0.010..0.011 rows=4.37 loops=106356)
+                                      Index Cond: (payer_vpa = (v.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 106356
+                                      Buffers: shared hit=593003 read=36818 written=3
+Planning:
+  Buffers: shared hit=698 read=29
+Planning Time: 1.322 ms
+Execution Time: 545.341 ms
+=== R18 run 2 ===
+Sort  (cost=122363.94..122430.54 rows=26640 width=56) (actual time=228.206..231.329 rows=57984.00 loops=1)
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: external merge  Disk: 2472kB
+  Buffers: shared hit=593016 read=56821, temp read=2633 written=2640
+  ->  Finalize GroupAggregate  (cost=93174.83..120405.73 rows=26640 width=56) (actual time=170.094..216.388 rows=57984.00 loops=1)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Rows Removed by Filter: 21742
+        Buffers: shared hit=593013 read=56821, temp read=2324 written=2330
+        ->  Gather Merge  (cost=93174.83..117768.37 rows=191808 width=56) (actual time=170.091..196.031 rows=79726.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=593013 read=56821, temp read=2324 written=2330
+              ->  Partial GroupAggregate  (cost=92174.81..94628.94 rows=79920 width=56) (actual time=168.310..191.329 rows=26575.33 loops=3)
+                    Group Key: u.user_id
+                    Buffers: shared hit=593013 read=56821, temp read=2324 written=2330
+                    ->  Sort  (cost=92174.81..92659.85 rows=194018 width=30) (actual time=168.299..175.451 rows=154883.67 loops=3)
+                          Sort Key: u.user_id
+                          Sort Method: external merge  Disk: 6184kB
+                          Buffers: shared hit=593013 read=56821, temp read=2324 written=2330
+                          Worker 0:  Sort Method: external merge  Disk: 6280kB
+                          Worker 1:  Sort Method: external merge  Disk: 6128kB
+                          ->  Nested Loop  (cost=14391.47..70489.87 rows=194018 width=30) (actual time=16.037..148.499 rows=154883.67 loops=3)
+                                Buffers: shared hit=592999 read=56821
+                                ->  Parallel Hash Join  (cost=14390.92..30194.03 rows=44400 width=50) (actual time=15.981..50.646 rows=35452.00 loops=3)
+                                      Hash Cond: (v.user_id = u.user_id)
+                                      Buffers: shared read=20000
+                                      ->  Parallel Seq Scan on vpas v  (cost=0.00..14636.44 rows=444444 width=30) (actual time=0.047..9.774 rows=355555.33 loops=3)
+                                            Buffers: shared read=10192
+                                      ->  Parallel Hash  (cost=13974.67..13974.67 rows=33300 width=24) (actual time=15.891..15.891 rows=26653.33 loops=3)
+                                            Buckets: 131072  Batches: 1  Memory Usage: 5728kB
+                                            Buffers: shared read=9808
+                                            ->  Parallel Seq Scan on users u  (cost=0.00..13974.67 rows=33300 width=24) (actual time=0.046..13.614 rows=26653.33 loops=3)
+                                                  Filter: ((kyc_status)::text <> 'VERIFIED'::text)
+                                                  Rows Removed by Filter: 240013
+                                                  Buffers: shared read=9808
+                                ->  Index Only Scan using idx_txn_payer_success_time on transactions t  (cost=0.56..0.84 rows=7 width=31) (actual time=0.002..0.003 rows=4.37 loops=106356)
+                                      Index Cond: (payer_vpa = (v.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 106356
+                                      Buffers: shared hit=592999 read=36821
+Planning:
+  Buffers: shared hit=636 read=91
+Planning Time: 1.347 ms
+Execution Time: 233.912 ms
+=== R18 run 3 ===
+Sort  (cost=122363.94..122430.54 rows=26640 width=56) (actual time=229.563..232.642 rows=57984.00 loops=1)
+  Sort Key: (sum(t.amount)) DESC
+  Sort Method: external merge  Disk: 2472kB
+  Buffers: shared hit=593005 read=56820, temp read=2634 written=2641
+  ->  Finalize GroupAggregate  (cost=93174.83..120405.73 rows=26640 width=56) (actual time=171.880..217.405 rows=57984.00 loops=1)
+        Group Key: u.user_id
+        Filter: (sum(t.amount) >= '10000'::numeric)
+        Rows Removed by Filter: 21742
+        Buffers: shared hit=593002 read=56820, temp read=2325 written=2331
+        ->  Gather Merge  (cost=93174.83..117768.37 rows=191808 width=56) (actual time=171.877..197.744 rows=79726.00 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              Buffers: shared hit=593002 read=56820, temp read=2325 written=2331
+              ->  Partial GroupAggregate  (cost=92174.81..94628.94 rows=79920 width=56) (actual time=169.257..191.063 rows=26575.33 loops=3)
+                    Group Key: u.user_id
+                    Buffers: shared hit=593002 read=56820, temp read=2325 written=2331
+                    ->  Sort  (cost=92174.81..92659.85 rows=194018 width=30) (actual time=169.247..176.252 rows=154883.67 loops=3)
+                          Sort Key: u.user_id
+                          Sort Method: external merge  Disk: 6128kB
+                          Buffers: shared hit=593002 read=56820, temp read=2325 written=2331
+                          Worker 0:  Sort Method: external merge  Disk: 6224kB
+                          Worker 1:  Sort Method: external merge  Disk: 6248kB
+                          ->  Nested Loop  (cost=14391.47..70489.87 rows=194018 width=30) (actual time=15.535..149.295 rows=154883.67 loops=3)
+                                Buffers: shared hit=592988 read=56820
+                                ->  Parallel Hash Join  (cost=14390.92..30194.03 rows=44400 width=50) (actual time=15.481..51.130 rows=35452.00 loops=3)
+                                      Hash Cond: (v.user_id = u.user_id)
+                                      Buffers: shared read=20000
+                                      ->  Parallel Seq Scan on vpas v  (cost=0.00..14636.44 rows=444444 width=30) (actual time=0.046..9.869 rows=355555.33 loops=3)
+                                            Buffers: shared read=10192
+                                      ->  Parallel Hash  (cost=13974.67..13974.67 rows=33300 width=24) (actual time=15.390..15.391 rows=26653.33 loops=3)
+                                            Buckets: 131072  Batches: 1  Memory Usage: 5696kB
+                                            Buffers: shared read=9808
+                                            ->  Parallel Seq Scan on users u  (cost=0.00..13974.67 rows=33300 width=24) (actual time=0.032..13.072 rows=26653.33 loops=3)
+                                                  Filter: ((kyc_status)::text <> 'VERIFIED'::text)
+                                                  Rows Removed by Filter: 240013
+                                                  Buffers: shared read=9808
+                                ->  Index Only Scan using idx_txn_payer_success_time on transactions t  (cost=0.56..0.84 rows=7 width=31) (actual time=0.002..0.003 rows=4.37 loops=106356)
+                                      Index Cond: (payer_vpa = (v.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 106356
+                                      Buffers: shared hit=592988 read=36820
+Planning:
+  Buffers: shared hit=636 read=91
+Planning Time: 1.334 ms
+Execution Time: 235.216 ms

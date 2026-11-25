@@ -1,0 +1,48 @@
+=== R16 run 1 ===
+Nested Loop  (cost=0.71..19282.17 rows=2370 width=51) (actual time=0.306..13.220 rows=1668.00 loops=1)
+  Buffers: shared hit=4809 read=1878
+  ->  Index Only Scan using idx_disputes_open_raised on disputes d  (cost=0.28..127.67 rows=2370 width=36) (actual time=0.033..0.123 rows=1668.00 loops=1)
+        Index Cond: (raised_at < '2026-06-23'::date)
+        Heap Fetches: 0
+        Index Searches: 1
+        Buffers: shared read=15
+  ->  Index Scan using transactions_pkey on transactions t  (cost=0.43..8.08 rows=1 width=23) (actual time=0.008..0.008 rows=1.00 loops=1668)
+        Index Cond: (txn_id = d.txn_id)
+        Index Searches: 1668
+        Buffers: shared hit=4809 read=1863
+Planning:
+  Buffers: shared hit=657 read=9 dirtied=1
+Planning Time: 1.791 ms
+Execution Time: 13.261 ms
+=== R16 run 2 ===
+Nested Loop  (cost=0.71..19282.17 rows=2370 width=51) (actual time=0.025..2.598 rows=1668.00 loops=1)
+  Buffers: shared hit=6687
+  ->  Index Only Scan using idx_disputes_open_raised on disputes d  (cost=0.28..127.67 rows=2370 width=36) (actual time=0.020..0.084 rows=1668.00 loops=1)
+        Index Cond: (raised_at < '2026-06-23'::date)
+        Heap Fetches: 0
+        Index Searches: 1
+        Buffers: shared hit=15
+  ->  Index Scan using transactions_pkey on transactions t  (cost=0.43..8.08 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=1668)
+        Index Cond: (txn_id = d.txn_id)
+        Index Searches: 1668
+        Buffers: shared hit=6672
+Planning:
+  Buffers: shared hit=666
+Planning Time: 0.748 ms
+Execution Time: 2.638 ms
+=== R16 run 3 ===
+Nested Loop  (cost=0.71..19282.17 rows=2370 width=51) (actual time=0.025..2.693 rows=1668.00 loops=1)
+  Buffers: shared hit=6687
+  ->  Index Only Scan using idx_disputes_open_raised on disputes d  (cost=0.28..127.67 rows=2370 width=36) (actual time=0.020..0.085 rows=1668.00 loops=1)
+        Index Cond: (raised_at < '2026-06-23'::date)
+        Heap Fetches: 0
+        Index Searches: 1
+        Buffers: shared hit=15
+  ->  Index Scan using transactions_pkey on transactions t  (cost=0.43..8.08 rows=1 width=23) (actual time=0.001..0.001 rows=1.00 loops=1668)
+        Index Cond: (txn_id = d.txn_id)
+        Index Searches: 1668
+        Buffers: shared hit=6672
+Planning:
+  Buffers: shared hit=666
+Planning Time: 0.789 ms
+Execution Time: 2.734 ms

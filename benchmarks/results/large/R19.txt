@@ -1,0 +1,102 @@
+=== R19 run 1 ===
+Sort  (cost=107153.89..107164.92 rows=4414 width=40) (actual time=119.274..119.368 rows=4345.00 loops=1)
+  Sort Key: (COALESCE((count(*) FILTER (WHERE ((transactions.status)::text = 'SUCCESS'::text))), '0'::bigint)) DESC
+  Sort Method: quicksort  Memory: 445kB
+  Buffers: shared hit=164982 read=14610
+  ->  Hash Right Join  (cost=106021.84..106886.67 rows=4414 width=40) (actual time=113.955..118.931 rows=4345.00 loops=1)
+        Hash Cond: (transactions.merchant_id = m.merchant_id)
+        Buffers: shared hit=164979 read=14610
+        ->  Finalize HashAggregate  (cost=104480.66..104862.90 rows=38224 width=20) (actual time=110.815..113.701 rows=51000.00 loops=1)
+              Group Key: transactions.merchant_id
+              Batches: 1  Memory Usage: 3865kB
+              Buffers: shared hit=164979 read=13874
+              ->  Gather  (cost=1000.43..103792.63 rows=91738 width=20) (actual time=0.538..103.183 rows=64383.00 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=164979 read=13874
+                    ->  Partial GroupAggregate  (cost=0.43..93618.83 rows=38224 width=20) (actual time=0.197..105.077 rows=21461.00 loops=3)
+                          Group Key: transactions.merchant_id
+                          Buffers: shared hit=164979 read=13874
+                          ->  Parallel Index Only Scan using idx_txn_merchant_time_status on transactions  (cost=0.43..81547.79 rows=1168880 width=19) (actual time=0.054..63.652 rows=934558.00 loops=3)
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=164979 read=13874
+        ->  Hash  (cost=1486.00..1486.00 rows=4414 width=24) (actual time=3.131..3.131 rows=4345.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 306kB
+              Buffers: shared read=736
+              ->  Seq Scan on merchants m  (cost=0.00..1486.00 rows=4414 width=24) (actual time=0.019..2.886 rows=4345.00 loops=1)
+                    Filter: (is_verified AND (city_id = 1))
+                    Rows Removed by Filter: 55655
+                    Buffers: shared read=736
+Planning:
+  Buffers: shared hit=529 read=64
+Planning Time: 1.143 ms
+Execution Time: 119.567 ms
+=== R19 run 2 ===
+Sort  (cost=107153.89..107164.92 rows=4414 width=40) (actual time=122.354..122.445 rows=4345.00 loops=1)
+  Sort Key: (COALESCE((count(*) FILTER (WHERE ((transactions.status)::text = 'SUCCESS'::text))), '0'::bigint)) DESC
+  Sort Method: quicksort  Memory: 445kB
+  Buffers: shared hit=167841 read=11672
+  ->  Hash Right Join  (cost=106021.84..106886.67 rows=4414 width=40) (actual time=117.143..122.008 rows=4345.00 loops=1)
+        Hash Cond: (transactions.merchant_id = m.merchant_id)
+        Buffers: shared hit=167838 read=11672
+        ->  Finalize HashAggregate  (cost=104480.66..104862.90 rows=38224 width=20) (actual time=114.194..117.000 rows=51000.00 loops=1)
+              Group Key: transactions.merchant_id
+              Batches: 1  Memory Usage: 3865kB
+              Buffers: shared hit=167838 read=10936
+              ->  Gather  (cost=1000.43..103792.63 rows=91738 width=20) (actual time=0.522..106.569 rows=64278.00 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=167838 read=10936
+                    ->  Partial GroupAggregate  (cost=0.43..93618.83 rows=38224 width=20) (actual time=0.205..108.599 rows=21426.00 loops=3)
+                          Group Key: transactions.merchant_id
+                          Buffers: shared hit=167838 read=10936
+                          ->  Parallel Index Only Scan using idx_txn_merchant_time_status on transactions  (cost=0.43..81547.79 rows=1168880 width=19) (actual time=0.050..63.148 rows=934558.00 loops=3)
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=167838 read=10936
+        ->  Hash  (cost=1486.00..1486.00 rows=4414 width=24) (actual time=2.940..2.940 rows=4345.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 306kB
+              Buffers: shared read=736
+              ->  Seq Scan on merchants m  (cost=0.00..1486.00 rows=4414 width=24) (actual time=0.032..2.670 rows=4345.00 loops=1)
+                    Filter: (is_verified AND (city_id = 1))
+                    Rows Removed by Filter: 55655
+                    Buffers: shared read=736
+Planning:
+  Buffers: shared hit=554 read=39
+Planning Time: 1.059 ms
+Execution Time: 122.648 ms
+=== R19 run 3 ===
+Sort  (cost=107153.89..107164.92 rows=4414 width=40) (actual time=99.883..99.971 rows=4345.00 loops=1)
+  Sort Key: (COALESCE((count(*) FILTER (WHERE ((transactions.status)::text = 'SUCCESS'::text))), '0'::bigint)) DESC
+  Sort Method: quicksort  Memory: 445kB
+  Buffers: shared hit=179648
+  ->  Hash Right Join  (cost=106021.84..106886.67 rows=4414 width=40) (actual time=94.922..99.551 rows=4345.00 loops=1)
+        Hash Cond: (transactions.merchant_id = m.merchant_id)
+        Buffers: shared hit=179645
+        ->  Finalize HashAggregate  (cost=104480.66..104862.90 rows=38224 width=20) (actual time=92.228..94.778 rows=51000.00 loops=1)
+              Group Key: transactions.merchant_id
+              Batches: 1  Memory Usage: 3865kB
+              Buffers: shared hit=178909
+              ->  Gather  (cost=1000.43..103792.63 rows=91738 width=20) (actual time=0.464..85.742 rows=64391.00 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=178909
+                    ->  Partial GroupAggregate  (cost=0.43..93618.83 rows=38224 width=20) (actual time=0.155..87.235 rows=21463.67 loops=3)
+                          Group Key: transactions.merchant_id
+                          Buffers: shared hit=178909
+                          ->  Parallel Index Only Scan using idx_txn_merchant_time_status on transactions  (cost=0.43..81547.79 rows=1168880 width=19) (actual time=0.023..48.232 rows=934558.00 loops=3)
+                                Heap Fetches: 0
+                                Index Searches: 1
+                                Buffers: shared hit=178909
+        ->  Hash  (cost=1486.00..1486.00 rows=4414 width=24) (actual time=2.686..2.687 rows=4345.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 306kB
+              Buffers: shared hit=736
+              ->  Seq Scan on merchants m  (cost=0.00..1486.00 rows=4414 width=24) (actual time=0.003..2.458 rows=4345.00 loops=1)
+                    Filter: (is_verified AND (city_id = 1))
+                    Rows Removed by Filter: 55655
+                    Buffers: shared hit=736
+Planning:
+  Buffers: shared hit=593
+Planning Time: 0.731 ms
+Execution Time: 100.156 ms

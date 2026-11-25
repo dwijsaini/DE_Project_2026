@@ -1,0 +1,72 @@
+=== R08 run 1 ===
+Sort  (cost=373276.97..374986.17 rows=683680 width=66) (actual time=1107.737..1107.738 rows=18.00 loops=1)
+  Sort Key: (count(DISTINCT payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=1264299 read=23080 written=287
+  ->  GroupAggregate  (cost=1.87..250934.25 rows=683680 width=66) (actual time=485.369..1107.725 rows=18.00 loops=1)
+        Group Key: payee_vpa, ((initiated_at)::date)
+        Filter: (count(DISTINCT payer_vpa) >= 5)
+        Rows Removed by Filter: 2040784
+        Buffers: shared hit=1264296 read=23080 written=287
+        ->  Incremental Sort  (cost=1.87..197949.03 rows=2051041 width=57) (actual time=0.071..677.872 rows=2050393.00 loops=1)
+              Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
+              Presorted Key: payee_vpa
+              Full-sort Groups: 62221  Sort Method: quicksort  Average Memory: 27kB  Peak Memory: 27kB
+              Pre-sorted Groups: 85  Sort Method: quicksort  Average Memory: 42kB  Peak Memory: 52kB
+              Buffers: shared hit=1264296 read=23080 written=287
+              ->  Index Only Scan using idx_txn_p2p_payee_time on transactions  (cost=0.55..128829.77 rows=2051041 width=57) (actual time=0.040..300.672 rows=2050393.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=1264290 read=23080 written=287
+Planning:
+  Buffers: shared hit=602
+Planning Time: 0.681 ms
+Execution Time: 1107.770 ms
+=== R08 run 2 ===
+Sort  (cost=373276.97..374986.17 rows=683680 width=66) (actual time=1036.854..1036.855 rows=18.00 loops=1)
+  Sort Key: (count(DISTINCT payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=1264299 read=23080
+  ->  GroupAggregate  (cost=1.87..250934.25 rows=683680 width=66) (actual time=415.612..1036.844 rows=18.00 loops=1)
+        Group Key: payee_vpa, ((initiated_at)::date)
+        Filter: (count(DISTINCT payer_vpa) >= 5)
+        Rows Removed by Filter: 2040784
+        Buffers: shared hit=1264296 read=23080
+        ->  Incremental Sort  (cost=1.87..197949.03 rows=2051041 width=57) (actual time=0.091..631.098 rows=2050393.00 loops=1)
+              Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
+              Presorted Key: payee_vpa
+              Full-sort Groups: 62221  Sort Method: quicksort  Average Memory: 27kB  Peak Memory: 27kB
+              Pre-sorted Groups: 85  Sort Method: quicksort  Average Memory: 42kB  Peak Memory: 52kB
+              Buffers: shared hit=1264296 read=23080
+              ->  Index Only Scan using idx_txn_p2p_payee_time on transactions  (cost=0.55..128829.77 rows=2051041 width=57) (actual time=0.053..279.847 rows=2050393.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=1264290 read=23080
+Planning:
+  Buffers: shared hit=602
+Planning Time: 0.959 ms
+Execution Time: 1036.914 ms
+=== R08 run 3 ===
+Sort  (cost=373276.97..374986.17 rows=683680 width=66) (actual time=1038.037..1038.038 rows=18.00 loops=1)
+  Sort Key: (count(DISTINCT payer_vpa)) DESC
+  Sort Method: quicksort  Memory: 26kB
+  Buffers: shared hit=1264299 read=23080
+  ->  GroupAggregate  (cost=1.87..250934.25 rows=683680 width=66) (actual time=411.968..1038.027 rows=18.00 loops=1)
+        Group Key: payee_vpa, ((initiated_at)::date)
+        Filter: (count(DISTINCT payer_vpa) >= 5)
+        Rows Removed by Filter: 2040784
+        Buffers: shared hit=1264296 read=23080
+        ->  Incremental Sort  (cost=1.87..197949.03 rows=2051041 width=57) (actual time=0.062..625.442 rows=2050393.00 loops=1)
+              Sort Key: payee_vpa, ((initiated_at)::date), payer_vpa
+              Presorted Key: payee_vpa
+              Full-sort Groups: 62221  Sort Method: quicksort  Average Memory: 27kB  Peak Memory: 27kB
+              Pre-sorted Groups: 85  Sort Method: quicksort  Average Memory: 42kB  Peak Memory: 52kB
+              Buffers: shared hit=1264296 read=23080
+              ->  Index Only Scan using idx_txn_p2p_payee_time on transactions  (cost=0.55..128829.77 rows=2051041 width=57) (actual time=0.038..271.582 rows=2050393.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=1264290 read=23080
+Planning:
+  Buffers: shared hit=563 read=39
+Planning Time: 1.242 ms
+Execution Time: 1038.071 ms

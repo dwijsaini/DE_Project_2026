@@ -1,0 +1,31 @@
+query_id,type,avg_ms,median_ms,min_ms,max_ms,scan_nodes
+R01,READ,0.117,0.120,0.104,0.126,Index Only Scan using idx_vpas_user_vpa on vpas | Index Only Scan using idx_txn_payer_time on transactions | Index Only Scan using idx_txn_payee_time on transactions
+R02,READ,0.128,0.042,0.035,0.306,Index Scan using vpas_pkey on vpas | Index Scan using users_pkey on users
+R03,READ,0.048,0.048,0.045,0.052,Index Only Scan using idx_vpas_user_vpa on vpas | Index Only Scan using idx_txn_payer_daily_limit on transactions
+R04,READ,0.060,0.060,0.053,0.066,Index Scan using idx_txn_pending_id on transactions
+R05,READ,0.117,0.054,0.052,0.244,Index Only Scan using idx_txn_merchant_success_time on transactions
+R06,READ,0.489,0.496,0.467,0.504,Index Only Scan using idx_txn_success_time_merchant on transactions | Seq Scan on merchants
+R07,READ,4.385,0.745,0.744,11.665,Index Only Scan using idx_txn_failed_time on transactions | Index Scan using vpas_pkey on vpas | Index Scan using bank_accounts_account_id_user_id_key on bank_accounts
+R08,READ,45.385,45.565,44.795,45.796,Index Only Scan using idx_txn_p2p_payee_time on transactions
+R09,READ,55.628,54.793,53.598,58.492,Index Only Scan using idx_txn_success_pair_time on transactions
+R10,READ,0.046,0.043,0.041,0.055,Index Only Scan using idx_rewards_user_unscratched_expiry on rewards
+R11,READ,0.052,0.047,0.046,0.063,Index Only Scan using idx_rewards_unscratched_expiry on rewards
+R12,READ,0.047,0.041,0.040,0.060,Index Only Scan using idx_bills_due_user_date on bill_payments
+R13,READ,1.354,1.313,1.278,1.470,Seq Scan on merchants | Index Only Scan using idx_txn_merchant on transactions
+R14,READ,0.150,0.079,0.076,0.296,Index Only Scan using idx_vpas_user_vpa on vpas | Index Only Scan using idx_txn_payer_success_time on transactions | Index Scan using merchants_pkey on merchants
+R15,READ,3.041,2.920,2.916,3.288,Index Only Scan using idx_txn_success_time_merchant on transactions | Seq Scan on merchants
+R16,READ,0.169,0.169,0.164,0.173,Index Only Scan using idx_disputes_open_raised on disputes | Index Scan using transactions_pkey on transactions
+R17,READ,9.121,9.460,8.427,9.475,Index Only Scan using idx_txn_p2m_merchant on transactions
+R18,READ,17.935,17.220,16.928,19.656,Seq Scan on vpas | Seq Scan on users | Index Only Scan using idx_txn_payer_success_time on transactions
+R19,READ,10.435,10.063,9.661,11.581,Index Scan using merchants_pkey on merchants | Index Only Scan using idx_txn_merchant_time_status on transactions
+R20,READ,2.107,2.023,1.988,2.310,Index Only Scan using idx_txn_time_status on transactions
+R21,READ,0.257,0.249,0.244,0.277,Bitmap Heap Scan on merchants | Bitmap Index Scan on idx_merchants_name_trgm
+R22,READ,0.037,0.033,0.030,0.048,Index Only Scan using idx_bank_accounts_user_primary on bank_accounts | Index Only Scan using idx_vpas_account on vpas
+R23,READ,38.892,38.020,37.687,40.969,Index Only Scan using idx_txn_ops_page on transactions
+R24,READ,0.206,0.023,0.023,0.571,Index Scan using transactions_upi_ref_key on transactions
+R25,READ,13.519,13.393,13.317,13.848,Seq Scan on bank_accounts | Index Only Scan using idx_txn_completed_time on transactions | Seq Scan on vpas
+W01,WRITE,1.196,0.790,0.789,2.010,(no scan)
+W02,WRITE,0.485,0.300,0.288,0.866,Index Only Scan using idx_txn_pending_id on transactions | Index Scan using transactions_pkey on transactions
+W03,WRITE,0.353,0.178,0.168,0.712,Index Only Scan using idx_rewards_unscratched_user_id on rewards | Index Scan using rewards_pkey on rewards
+W04,WRITE,0.395,0.457,0.235,0.493,Index Scan using idx_rewards_unscratched_expiry on rewards
+W05,WRITE,1.590,0.938,0.887,2.945,Bitmap Heap Scan on bill_payments | Bitmap Index Scan on idx_bills_due_date

@@ -1,0 +1,30 @@
+=== R10 run 1 ===
+Index Only Scan using idx_rewards_user_unscratched_expiry on rewards  (cost=0.29..8.30 rows=1 width=31) (actual time=0.007..0.007 rows=0.00 loops=1)
+  Index Cond: ((user_id = 15177) AND (expires_at > '2026-06-30 23:59:00+05:30'::timestamp with time zone))
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared read=2
+Planning:
+  Buffers: shared hit=137 read=33 dirtied=2
+Planning Time: 0.732 ms
+Execution Time: 0.023 ms
+=== R10 run 2 ===
+Index Only Scan using idx_rewards_user_unscratched_expiry on rewards  (cost=0.29..8.30 rows=1 width=31) (actual time=0.003..0.004 rows=0.00 loops=1)
+  Index Cond: ((user_id = 15177) AND (expires_at > '2026-06-30 23:59:00+05:30'::timestamp with time zone))
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=170
+Planning Time: 0.247 ms
+Execution Time: 0.017 ms
+=== R10 run 3 ===
+Index Only Scan using idx_rewards_user_unscratched_expiry on rewards  (cost=0.29..8.30 rows=1 width=31) (actual time=0.004..0.004 rows=0.00 loops=1)
+  Index Cond: ((user_id = 15177) AND (expires_at > '2026-06-30 23:59:00+05:30'::timestamp with time zone))
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=170
+Planning Time: 0.246 ms
+Execution Time: 0.017 ms

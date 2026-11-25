@@ -1,0 +1,38 @@
+                                                                                                                QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=128694.34..128694.35 rows=1 width=40) (actual time=18.191..19.017 rows=1.00 loops=1)
+   Output: count(*), sum(transactions_partitioned.amount)
+   Buffers: shared hit=4500 read=447
+   ->  Gather  (cost=128694.11..128694.32 rows=2 width=40) (actual time=18.148..19.013 rows=3.00 loops=1)
+         Output: (PARTIAL count(*)), (PARTIAL sum(transactions_partitioned.amount))
+         Workers Planned: 2
+         Workers Launched: 2
+         Buffers: shared hit=4500 read=447
+         ->  Partial Aggregate  (cost=127694.11..127694.12 rows=1 width=40) (actual time=16.199..16.199 rows=1.00 loops=3)
+               Output: PARTIAL count(*), PARTIAL sum(transactions_partitioned.amount)
+               Buffers: shared hit=4500 read=447
+               Worker 0:  actual time=15.249..15.249 rows=1.00 loops=1
+                 Buffers: shared hit=1655 read=12
+               Worker 1:  actual time=15.376..15.377 rows=1.00 loops=1
+                 Buffers: shared hit=1407 read=35
+               ->  Parallel Append  (cost=0.00..127165.27 rows=105767 width=6) (actual time=0.048..13.096 rows=84430.67 loops=3)
+                     Buffers: shared hit=4500 read=447
+                     Worker 0:  actual time=0.050..12.694 rows=85395.00 loops=1
+                       Buffers: shared hit=1655 read=12
+                     Worker 1:  actual time=0.060..12.295 rows=73935.00 loops=1
+                       Buffers: shared hit=1407 read=35
+                     Subplans Removed: 18
+                     ->  Parallel Seq Scan on gpay.transactions_p2026_06 transactions_partitioned_1  (cost=0.00..6953.92 rows=105749 width=6) (actual time=0.047..10.336 rows=84430.67 loops=3)
+                           Output: transactions_partitioned_1.amount
+                           Filter: ((transactions_partitioned_1.initiated_at >= '2026-06-01'::date) AND (transactions_partitioned_1.initiated_at < '2026-07-01'::date) AND ((transactions_partitioned_1.status)::text = 'SUCCESS'::text))
+                           Rows Removed by Filter: 7314
+                           Buffers: shared hit=4500 read=447
+                           Worker 0:  actual time=0.050..9.895 rows=85395.00 loops=1
+                             Buffers: shared hit=1655 read=12
+                           Worker 1:  actual time=0.060..9.889 rows=73935.00 loops=1
+                             Buffers: shared hit=1407 read=35
+ Planning:
+   Buffers: shared hit=1450 read=47 dirtied=30
+ Planning Time: 3.274 ms
+ Execution Time: 19.062 ms
+(35 rows)

@@ -1,0 +1,30 @@
+=== R11 run 1 ===
+Index Only Scan using idx_rewards_unscratched_expiry on rewards  (cost=0.29..345.99 rows=9926 width=16) (actual time=0.054..0.099 rows=1034.00 loops=1)
+  Index Cond: (expires_at < '2026-07-04'::date)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared read=6
+Planning:
+  Buffers: shared hit=163 read=1
+Planning Time: 0.284 ms
+Execution Time: 0.132 ms
+=== R11 run 2 ===
+Index Only Scan using idx_rewards_unscratched_expiry on rewards  (cost=0.29..345.99 rows=9926 width=16) (actual time=0.026..0.066 rows=1034.00 loops=1)
+  Index Cond: (expires_at < '2026-07-04'::date)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=164
+Planning Time: 0.248 ms
+Execution Time: 0.105 ms
+=== R11 run 3 ===
+Index Only Scan using idx_rewards_unscratched_expiry on rewards  (cost=0.29..345.99 rows=9926 width=16) (actual time=0.026..0.066 rows=1034.00 loops=1)
+  Index Cond: (expires_at < '2026-07-04'::date)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=164
+Planning Time: 0.246 ms
+Execution Time: 0.097 ms

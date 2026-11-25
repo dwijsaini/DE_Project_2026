@@ -1,0 +1,129 @@
+=== R01 run 1 ===
+Limit  (cost=46.94..46.99 rows=18 width=1150) (actual time=0.738..0.739 rows=3.00 loops=1)
+  Buffers: shared hit=35 read=7
+  ->  Sort  (cost=46.94..46.99 rows=18 width=1150) (actual time=0.738..0.738 rows=3.00 loops=1)
+        Sort Key: t.initiated_at DESC
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=35 read=7
+        ->  Unique  (cost=46.21..46.57 rows=18 width=1150) (actual time=0.731..0.732 rows=3.00 loops=1)
+              Buffers: shared hit=32 read=7
+              ->  Sort  (cost=46.21..46.25 rows=18 width=1150) (actual time=0.730..0.731 rows=3.00 loops=1)
+                    Sort Key: t.txn_id, t.upi_ref, t.payer_vpa, t.payee_vpa, t.amount, t.status, t.initiated_at
+                    Sort Method: quicksort  Memory: 25kB
+                    Buffers: shared hit=32 read=7
+                    ->  Append  (cost=0.98..45.83 rows=18 width=1150) (actual time=0.539..0.716 rows=3.00 loops=1)
+                          Buffers: shared hit=20 read=7
+                          ->  Nested Loop  (cost=0.98..22.02 rows=9 width=85) (actual time=0.537..0.538 rows=3.00 loops=1)
+                                Buffers: shared hit=10 read=5
+                                ->  Index Only Scan using idx_vpas_user_vpa on vpas v  (cost=0.43..8.46 rows=2 width=26) (actual time=0.308..0.309 rows=2.00 loops=1)
+                                      Index Cond: (user_id = 15177)
+                                      Heap Fetches: 0
+                                      Index Searches: 1
+                                      Buffers: shared hit=1 read=3
+                                ->  Index Only Scan using idx_txn_payer_time on transactions t  (cost=0.56..6.70 rows=8 width=85) (actual time=0.114..0.114 rows=1.50 loops=2)
+                                      Index Cond: (payer_vpa = (v.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 2
+                                      Buffers: shared hit=9 read=2
+                          ->  Nested Loop  (cost=0.98..23.72 rows=9 width=85) (actual time=0.177..0.177 rows=0.00 loops=1)
+                                Buffers: shared hit=10 read=2
+                                ->  Index Only Scan using idx_vpas_user_vpa on vpas v_1  (cost=0.43..8.46 rows=2 width=26) (actual time=0.003..0.003 rows=2.00 loops=1)
+                                      Index Cond: (user_id = 15177)
+                                      Heap Fetches: 0
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                                ->  Index Only Scan using idx_txn_payee_time on transactions t_1  (cost=0.56..7.24 rows=39 width=85) (actual time=0.087..0.087 rows=0.00 loops=2)
+                                      Index Cond: (payee_vpa = (v_1.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 2
+                                      Buffers: shared hit=6 read=2
+Planning:
+  Buffers: shared hit=670 read=41
+Planning Time: 4.440 ms
+Execution Time: 0.771 ms
+=== R01 run 2 ===
+Limit  (cost=46.94..46.99 rows=18 width=1150) (actual time=0.069..0.070 rows=3.00 loops=1)
+  Buffers: shared hit=42
+  ->  Sort  (cost=46.94..46.99 rows=18 width=1150) (actual time=0.068..0.069 rows=3.00 loops=1)
+        Sort Key: t.initiated_at DESC
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=42
+        ->  Unique  (cost=46.21..46.57 rows=18 width=1150) (actual time=0.058..0.061 rows=3.00 loops=1)
+              Buffers: shared hit=39
+              ->  Sort  (cost=46.21..46.25 rows=18 width=1150) (actual time=0.058..0.058 rows=3.00 loops=1)
+                    Sort Key: t.txn_id, t.upi_ref, t.payer_vpa, t.payee_vpa, t.amount, t.status, t.initiated_at
+                    Sort Method: quicksort  Memory: 25kB
+                    Buffers: shared hit=39
+                    ->  Append  (cost=0.98..45.83 rows=18 width=1150) (actual time=0.021..0.039 rows=3.00 loops=1)
+                          Buffers: shared hit=27
+                          ->  Nested Loop  (cost=0.98..22.02 rows=9 width=85) (actual time=0.019..0.021 rows=3.00 loops=1)
+                                Buffers: shared hit=15
+                                ->  Index Only Scan using idx_vpas_user_vpa on vpas v  (cost=0.43..8.46 rows=2 width=26) (actual time=0.004..0.005 rows=2.00 loops=1)
+                                      Index Cond: (user_id = 15177)
+                                      Heap Fetches: 0
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                                ->  Index Only Scan using idx_txn_payer_time on transactions t  (cost=0.56..6.70 rows=8 width=85) (actual time=0.007..0.007 rows=1.50 loops=2)
+                                      Index Cond: (payer_vpa = (v.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 2
+                                      Buffers: shared hit=11
+                          ->  Nested Loop  (cost=0.98..23.72 rows=9 width=85) (actual time=0.017..0.017 rows=0.00 loops=1)
+                                Buffers: shared hit=12
+                                ->  Index Only Scan using idx_vpas_user_vpa on vpas v_1  (cost=0.43..8.46 rows=2 width=26) (actual time=0.004..0.004 rows=2.00 loops=1)
+                                      Index Cond: (user_id = 15177)
+                                      Heap Fetches: 0
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                                ->  Index Only Scan using idx_txn_payee_time on transactions t_1  (cost=0.56..7.24 rows=39 width=85) (actual time=0.006..0.006 rows=0.00 loops=2)
+                                      Index Cond: (payee_vpa = (v_1.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 2
+                                      Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=716
+Planning Time: 1.646 ms
+Execution Time: 0.114 ms
+=== R01 run 3 ===
+Limit  (cost=46.94..46.99 rows=18 width=1150) (actual time=0.064..0.065 rows=3.00 loops=1)
+  Buffers: shared hit=42
+  ->  Sort  (cost=46.94..46.99 rows=18 width=1150) (actual time=0.064..0.064 rows=3.00 loops=1)
+        Sort Key: t.initiated_at DESC
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=42
+        ->  Unique  (cost=46.21..46.57 rows=18 width=1150) (actual time=0.054..0.057 rows=3.00 loops=1)
+              Buffers: shared hit=39
+              ->  Sort  (cost=46.21..46.25 rows=18 width=1150) (actual time=0.054..0.055 rows=3.00 loops=1)
+                    Sort Key: t.txn_id, t.upi_ref, t.payer_vpa, t.payee_vpa, t.amount, t.status, t.initiated_at
+                    Sort Method: quicksort  Memory: 25kB
+                    Buffers: shared hit=39
+                    ->  Append  (cost=0.98..45.83 rows=18 width=1150) (actual time=0.020..0.037 rows=3.00 loops=1)
+                          Buffers: shared hit=27
+                          ->  Nested Loop  (cost=0.98..22.02 rows=9 width=85) (actual time=0.019..0.020 rows=3.00 loops=1)
+                                Buffers: shared hit=15
+                                ->  Index Only Scan using idx_vpas_user_vpa on vpas v  (cost=0.43..8.46 rows=2 width=26) (actual time=0.004..0.005 rows=2.00 loops=1)
+                                      Index Cond: (user_id = 15177)
+                                      Heap Fetches: 0
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                                ->  Index Only Scan using idx_txn_payer_time on transactions t  (cost=0.56..6.70 rows=8 width=85) (actual time=0.007..0.007 rows=1.50 loops=2)
+                                      Index Cond: (payer_vpa = (v.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 2
+                                      Buffers: shared hit=11
+                          ->  Nested Loop  (cost=0.98..23.72 rows=9 width=85) (actual time=0.015..0.015 rows=0.00 loops=1)
+                                Buffers: shared hit=12
+                                ->  Index Only Scan using idx_vpas_user_vpa on vpas v_1  (cost=0.43..8.46 rows=2 width=26) (actual time=0.003..0.003 rows=2.00 loops=1)
+                                      Index Cond: (user_id = 15177)
+                                      Heap Fetches: 0
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                                ->  Index Only Scan using idx_txn_payee_time on transactions t_1  (cost=0.56..7.24 rows=39 width=85) (actual time=0.005..0.005 rows=0.00 loops=2)
+                                      Index Cond: (payee_vpa = (v_1.vpa)::text)
+                                      Heap Fetches: 0
+                                      Index Searches: 2
+                                      Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=716
+Planning Time: 1.554 ms
+Execution Time: 0.106 ms

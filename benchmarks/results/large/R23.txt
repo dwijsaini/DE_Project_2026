@@ -1,0 +1,75 @@
+=== R23 run 1 ===
+Limit  (cost=9582.82..9588.29 rows=25 width=42) (actual time=41.463..41.469 rows=25.00 loops=1)
+  Buffers: shared hit=1647 read=1639
+  CTE cursor
+    ->  Limit  (cost=9582.34..9582.39 rows=1 width=12) (actual time=13.828..13.828 rows=1.00 loops=1)
+          Buffers: shared hit=4 read=1639
+          ->  Index Only Scan using idx_txn_ops_page on transactions  (cost=0.43..240018.03 rows=5009784 width=12) (actual time=0.002..10.532 rows=200000.00 loops=1)
+                Heap Fetches: 0
+                Index Searches: 1
+                Buffers: shared hit=4 read=1639
+  ->  Nested Loop  (cost=0.43..365262.64 rows=1669928 width=42) (actual time=41.462..41.466 rows=25.00 loops=1)
+        Join Filter: (ROW(t.initiated_at, t.txn_id) < ROW(c.initiated_at, c.txn_id))
+        Rows Removed by Join Filter: 200000
+        Buffers: shared hit=1647 read=1639
+        ->  Index Only Scan using idx_txn_ops_page on transactions t  (cost=0.43..240018.03 rows=5009784 width=42) (actual time=0.031..7.209 rows=200025.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=1643
+        ->  CTE Scan on cursor c  (cost=0.00..0.02 rows=1 width=12) (actual time=0.000..0.000 rows=1.00 loops=200025)
+              Storage: Memory  Maximum Storage: 17kB
+              Buffers: shared hit=4 read=1639
+Planning:
+  Buffers: shared hit=534 read=3
+Planning Time: 0.830 ms
+Execution Time: 41.494 ms
+=== R23 run 2 ===
+Limit  (cost=9582.82..9588.29 rows=25 width=42) (actual time=40.018..40.024 rows=25.00 loops=1)
+  Buffers: shared hit=3286
+  CTE cursor
+    ->  Limit  (cost=9582.34..9582.39 rows=1 width=12) (actual time=12.159..12.159 rows=1.00 loops=1)
+          Buffers: shared hit=1643
+          ->  Index Only Scan using idx_txn_ops_page on transactions  (cost=0.43..240018.03 rows=5009784 width=12) (actual time=0.002..8.839 rows=200000.00 loops=1)
+                Heap Fetches: 0
+                Index Searches: 1
+                Buffers: shared hit=1643
+  ->  Nested Loop  (cost=0.43..365262.64 rows=1669928 width=42) (actual time=40.018..40.022 rows=25.00 loops=1)
+        Join Filter: (ROW(t.initiated_at, t.txn_id) < ROW(c.initiated_at, c.txn_id))
+        Rows Removed by Join Filter: 200000
+        Buffers: shared hit=3286
+        ->  Index Only Scan using idx_txn_ops_page on transactions t  (cost=0.43..240018.03 rows=5009784 width=42) (actual time=0.024..7.010 rows=200025.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=1643
+        ->  CTE Scan on cursor c  (cost=0.00..0.02 rows=1 width=12) (actual time=0.000..0.000 rows=1.00 loops=200025)
+              Storage: Memory  Maximum Storage: 17kB
+              Buffers: shared hit=1643
+Planning:
+  Buffers: shared hit=537
+Planning Time: 0.657 ms
+Execution Time: 40.048 ms
+=== R23 run 3 ===
+Limit  (cost=9582.82..9588.29 rows=25 width=42) (actual time=39.639..39.646 rows=25.00 loops=1)
+  Buffers: shared hit=3286
+  CTE cursor
+    ->  Limit  (cost=9582.34..9582.39 rows=1 width=12) (actual time=12.053..12.054 rows=1.00 loops=1)
+          Buffers: shared hit=1643
+          ->  Index Only Scan using idx_txn_ops_page on transactions  (cost=0.43..240018.03 rows=5009784 width=12) (actual time=0.002..8.706 rows=200000.00 loops=1)
+                Heap Fetches: 0
+                Index Searches: 1
+                Buffers: shared hit=1643
+  ->  Nested Loop  (cost=0.43..365262.64 rows=1669928 width=42) (actual time=39.639..39.644 rows=25.00 loops=1)
+        Join Filter: (ROW(t.initiated_at, t.txn_id) < ROW(c.initiated_at, c.txn_id))
+        Rows Removed by Join Filter: 200000
+        Buffers: shared hit=3286
+        ->  Index Only Scan using idx_txn_ops_page on transactions t  (cost=0.43..240018.03 rows=5009784 width=42) (actual time=0.024..6.996 rows=200025.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=1643
+        ->  CTE Scan on cursor c  (cost=0.00..0.02 rows=1 width=12) (actual time=0.000..0.000 rows=1.00 loops=200025)
+              Storage: Memory  Maximum Storage: 17kB
+              Buffers: shared hit=1643
+Planning:
+  Buffers: shared hit=537
+Planning Time: 0.672 ms
+Execution Time: 39.671 ms
