@@ -1,43 +1,42 @@
 # CP2 baseline timings
 
-**Run date:** 17 November 2026 · **Database:** `gpay_cp1` · **PostgreSQL:** 18.7
+**Run date:** 25 November 2026 · **Database:** `gpay_cp1` · **PostgreSQL:** 18.7
 **Method:** repository benchmark script, `EXPLAIN (ANALYZE, BUFFERS)`, three runs per query. Write queries ran in transactions that were rolled back. Times below are milliseconds; averages are the arithmetic mean of the three raw `Execution Time` readings.
 
 Raw plans and the generated average/median/min/max summary are in [`benchmarks/results/baseline/`](../benchmarks/results/baseline/). The original workload file was not modified.
 
-| Query | Type | Run 1 (ms) | Run 2 (ms) | Run 3 (ms) | Average (ms) |
+| SQL Query | Type | Run 1 (ms) | Run 2 (ms) | Run 3 (ms) | Average (ms) |
 |---|---|---:|---:|---:|---:|
-| R01 Transaction history | READ | 44.852 | 14.958 | 14.540 | 24.783 |
-| R02 VPA lookup | READ | 0.818 | 0.027 | 0.028 | 0.291 |
-| R03 Daily UPI limit check | READ | 11.690 | 11.731 | 11.861 | 11.761 |
-| R04 Stale pending payments | READ | 7.521 | 7.266 | 7.509 | 7.432 |
-| R05 Hourly merchant collections | READ | 6.691 | 6.561 | 6.749 | 6.667 |
-| R06 Merchant settlement totals | READ | 7.704 | 6.572 | 6.632 | 6.969 |
-| R07 Failure codes by payer bank | READ | 16.453 | 6.907 | 6.802 | 10.054 |
-| R08 P2P recipients with 5+ payers | READ | 119.904 | 118.702 | 118.604 | 119.070 |
-| R09 Repeated payments within 10 minutes | READ | 259.392 | 259.693 | 268.175 | 262.420 |
-| R10 User's active unscratched rewards | READ | 4.474 | 1.530 | 1.352 | 2.452 |
-| R11 Rewards expiring soon | READ | 1.667 | 1.779 | 1.593 | 1.680 |
-| R12 User's upcoming bills | READ | 3.125 | 1.092 | 1.067 | 1.761 |
-| R13 Merchants with no payments | READ | 22.091 | 22.303 | 21.542 | 21.979 |
-| R14 User spending by merchant category | READ | 16.997 | 17.683 | 17.328 | 17.336 |
-| R15 Top merchants by city | READ | 8.980 | 9.363 | 9.361 | 9.235 |
-| R16 Open disputes past SLA | READ | 1.866 | 0.275 | 0.273 | 0.805 |
-| R17 Merchant refund rate | READ | 11.216 | 11.718 | 11.430 | 11.455 |
-| R18 Non-verified users with high spend | READ | 24.219 | 22.679 | 22.704 | 23.201 |
-| R19 Verified Bengaluru merchant report | READ | 4,164.094 | 4,170.588 | 4,220.488 | 4,185.057 |
-| R20 Daily success rate | READ | 10.073 | 9.744 | 9.789 | 9.869 |
-| R21 Merchant name search | READ | 1.027 | 1.001 | 0.999 | 1.009 |
-| R22 User's primary account and VPAs | READ | 4.574 | 2.980 | 2.937 | 3.497 |
-| R23 Transaction page 8,001 | READ | 58.487 | 58.299 | 61.950 | 59.579 |
-| R24 UPI reference lookup | READ | 1.783 | 0.033 | 0.033 | 0.616 |
-| R25 Average completion time by payer bank | READ | 22.671 | 20.153 | 20.091 | 20.972 |
-| W01 Create pending payment | WRITE | 5.013 | 0.524 | 0.506 | 2.014 |
-| W02 Complete oldest pending payment | WRITE | 24.094 | 18.568 | 18.806 | 20.489 |
-| W03 Credit oldest unscratched reward | WRITE | 5.281 | 1.395 | 1.413 | 2.696 |
-| W04 Expire rewards | WRITE | 4.486 | 1.649 | 1.730 | 2.622 |
-| W05 Mark overdue bills | WRITE | 7.321 | 1.928 | 1.906 | 3.718 |
-
+| R01: Transaction history: everything user 15177 sent or received, newest first | READ | 26.842 | 19.593 | 16.150 | 20.862 |
+| R02: "Pay to UPI ID": check that the entered VPA exists and is active | READ | 0.031 | 0.044 | 0.030 | 0.035 |
+| R03: UPI limit check: total successfully sent by user 15177 on 30 June 2026 (limit ₹1,00,000/day) | READ | 12.928 | 12.884 | 12.424 | 12.745 |
+| R04: Reconciliation: payments still PENDING more than 15 minutes after 23:59 on 30 Jun 2026 | READ | 7.731 | 7.762 | 7.722 | 7.738 |
+| R05: Google Pay for Business: hourly collections of merchant 2 on 29 June 2026 | READ | 7.185 | 7.320 | 7.207 | 7.237 |
+| R06: Settlement: amount to settle to every merchant for 29 June 2026 | READ | 7.233 | 7.808 | 7.275 | 7.439 |
+| R07: Bank health: failure codes per payer bank in the last 7 days | READ | 7.807 | 7.984 | 7.678 | 7.823 |
+| R08: Fraud: VPAs that received P2P money from 5+ different people on the same day | READ | 127.827 | 130.570 | 126.583 | 128.327 |
+| R09: Fraud: repeated payments—same payer to the same payee within 10 minutes of the previous one | READ | 277.354 | 273.020 | 269.561 | 273.312 |
+| R10: Rewards tab: user 15177's unscratched cards that have not expired | READ | 1.655 | 1.618 | 1.566 | 1.613 |
+| R11: Notification job: unscratched rewards that expire in the first 3 days of July | READ | 1.858 | 1.715 | 1.848 | 1.807 |
+| R12: Bill reminders: user 1072's unpaid bills due in the next 7 days | READ | 1.775 | 1.305 | 1.243 | 1.441 |
+| R13: Merchant success team: merchants who have never received a payment (to call and help them) | READ | 23.899 | 23.778 | 24.342 | 24.006 |
+| R14: Spend analysis: user 15177's 2026 spending per merchant category code (MCC) | READ | 17.485 | 18.064 | 17.733 | 17.761 |
+| R15: Business insights: top 10 merchants by June 2026 GMV in each city | READ | 10.214 | 10.290 | 10.081 | 10.195 |
+| R16: Disputes desk: disputes open for more than 7 days (SLA breached) | READ | 0.303 | 0.303 | 0.296 | 0.301 |
+| R17: Merchant risk: refund rate per merchant (at least 30 payments) | READ | 11.809 | 11.976 | 11.884 | 11.890 |
+| R18: Compliance: users without verified KYC who have successfully sent ₹10,000+ in total | READ | 24.728 | 24.799 | 25.237 | 24.921 |
+| R19: Merchant report: last payment time and successful payment count of every verified Bengaluru merchant | READ | 4731.299 | 4741.654 | 4766.310 | 4746.421 |
+| R20: Platform health: daily success rate in June 2026 | READ | 10.586 | 10.397 | 10.539 | 10.507 |
+| R21: "Search businesses": merchants with "chai" in their name | READ | 1.077 | 1.019 | 1.055 | 1.050 |
+| R22: Payment screen: user 15177's primary bank account and all their UPI IDs | READ | 3.359 | 3.655 | 3.460 | 3.491 |
+| R23: Operations console: all transactions, newest first, page 8,001 (25 per page) | READ | 61.527 | 61.729 | 61.461 | 61.572 |
+| R24: Customer support: find a payment by its UPI reference number | READ | 0.032 | 0.035 | 0.038 | 0.035 |
+| R25: Bank health: average seconds from initiation to completion per payer bank (June 2026) | READ | 21.688 | 21.851 | 21.754 | 21.764 |
+| W01: Pay: user 15177 starts a ₹250 payment to merchant 2 (PENDING until the bank confirms) | WRITE | 0.620 | 0.550 | 0.598 | 0.589 |
+| W02: Bank callback: mark the oldest PENDING payment as successful | WRITE | 23.447 | 20.312 | 20.451 | 21.403 |
+| W03: Scratch card: user 15177 scratches their oldest unscratched card | WRITE | 1.680 | 1.549 | 1.586 | 1.605 |
+| W04: Nightly job (run at 00:00 on 4 Jul 2026): expire every reward whose time is up | WRITE | 1.949 | 1.980 | 1.986 | 1.972 |
+| W05: Nightly job: bills past their due date and still unpaid become OVERDUE | WRITE | 2.372 | 2.165 | 2.176 | 2.238 |
 ## Baseline plan observations
 
 These are observations from the third raw plan for each query. The first run can be slower than later runs as pages warm in cache; the report retains all three timings rather than removing that variation.

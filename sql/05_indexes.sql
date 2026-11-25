@@ -7,6 +7,12 @@
 CREATE INDEX idx_vpas_user_id_vpa
     ON gpay.vpas USING btree (user_id, vpa);
 
+-- R22: avoid scanning every bank account for the single-user payment screen;
+-- keep the join key and display fields available from the index.
+CREATE INDEX idx_bank_accounts_user_primary
+    ON gpay.bank_accounts USING btree (user_id, is_primary DESC, account_id)
+    INCLUDE (bank_name, account_last4);
+
 -- R01: history by payer or payee, newest first. Separate indexes let the OR
 -- predicate use bitmap paths; initiated_at DESC also supplies the sort order.
 CREATE INDEX idx_transactions_payer_vpa_initiated_desc
@@ -38,6 +44,7 @@ CREATE INDEX idx_transactions_success_merchant
 -- ordering key; only SUCCESS rows are needed by this query.
 CREATE INDEX idx_transactions_success_payer_payee_initiated
     ON gpay.transactions USING btree (payer_vpa, payee_vpa, initiated_at)
+    INCLUDE (txn_id, amount)
     WHERE status = 'SUCCESS';
 
 -- R23: newest-first transaction page; the baseline full sort spills to disk.

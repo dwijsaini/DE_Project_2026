@@ -1,0 +1,63 @@
+=== R22 run 1 ===
+Sort  (cost=1004.75..1004.76 rows=1 width=45) (actual time=0.580..0.580 rows=2.00 loops=1)
+  Sort Key: ba.is_primary DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=164
+  ->  Nested Loop Left Join  (cost=0.70..1004.74 rows=1 width=45) (actual time=0.235..0.572 rows=2.00 loops=1)
+        Join Filter: (v.account_id = ba.account_id)
+        Rows Removed by Join Filter: 2
+        Buffers: shared hit=159
+        ->  Index Scan using bank_accounts_account_id_user_id_key on bank_accounts ba  (cost=0.29..996.30 rows=1 width=28) (actual time=0.227..0.563 rows=2.00 loops=1)
+              Index Cond: (user_id = 15177)
+              Index Searches: 1
+              Buffers: shared hit=151
+        ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.003..0.004 rows=2.00 loops=2)
+              Index Cond: (user_id = 15177)
+              Index Searches: 2
+              Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=273
+Planning Time: 0.441 ms
+Execution Time: 0.604 ms
+=== R22 run 2 ===
+Sort  (cost=1004.75..1004.76 rows=1 width=45) (actual time=0.594..0.594 rows=2.00 loops=1)
+  Sort Key: ba.is_primary DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=164
+  ->  Nested Loop Left Join  (cost=0.70..1004.74 rows=1 width=45) (actual time=0.244..0.586 rows=2.00 loops=1)
+        Join Filter: (v.account_id = ba.account_id)
+        Rows Removed by Join Filter: 2
+        Buffers: shared hit=159
+        ->  Index Scan using bank_accounts_account_id_user_id_key on bank_accounts ba  (cost=0.29..996.30 rows=1 width=28) (actual time=0.235..0.577 rows=2.00 loops=1)
+              Index Cond: (user_id = 15177)
+              Index Searches: 1
+              Buffers: shared hit=151
+        ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.004..0.004 rows=2.00 loops=2)
+              Index Cond: (user_id = 15177)
+              Index Searches: 2
+              Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=273
+Planning Time: 0.367 ms
+Execution Time: 0.618 ms
+=== R22 run 3 ===
+Sort  (cost=1004.75..1004.76 rows=1 width=45) (actual time=0.595..0.595 rows=2.00 loops=1)
+  Sort Key: ba.is_primary DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=164
+  ->  Nested Loop Left Join  (cost=0.70..1004.74 rows=1 width=45) (actual time=0.250..0.587 rows=2.00 loops=1)
+        Join Filter: (v.account_id = ba.account_id)
+        Rows Removed by Join Filter: 2
+        Buffers: shared hit=159
+        ->  Index Scan using bank_accounts_account_id_user_id_key on bank_accounts ba  (cost=0.29..996.30 rows=1 width=28) (actual time=0.243..0.579 rows=2.00 loops=1)
+              Index Cond: (user_id = 15177)
+              Index Searches: 1
+              Buffers: shared hit=151
+        ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.003..0.003 rows=2.00 loops=2)
+              Index Cond: (user_id = 15177)
+              Index Searches: 2
+              Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=273
+Planning Time: 0.379 ms
+Execution Time: 0.618 ms

@@ -1,0 +1,36 @@
+=== W04 run 1 ===
+Update on rewards  (cost=0.29..434.47 rows=0 width=0) (actual time=3.162..3.162 rows=0.00 loops=1)
+  Buffers: shared hit=9633 read=139 dirtied=98 written=12
+  ->  Index Scan using idx_rewards_unscratched_expiry on rewards  (cost=0.29..434.47 rows=9959 width=48) (actual time=0.027..0.259 rows=1034.00 loops=1)
+        Index Cond: (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone)
+        Filter: ((status)::text = 'UNSCRATCHED'::text)
+        Index Searches: 1
+        Buffers: shared read=53
+Planning:
+  Buffers: shared hit=125
+Planning Time: 0.241 ms
+Execution Time: 3.197 ms
+=== W04 run 2 ===
+Update on rewards  (cost=0.29..434.72 rows=0 width=0) (actual time=2.148..2.148 rows=0.00 loops=1)
+  Buffers: shared hit=9824 dirtied=11 written=11
+  ->  Index Scan using idx_rewards_unscratched_expiry on rewards  (cost=0.29..434.72 rows=9972 width=48) (actual time=0.013..0.201 rows=1034.00 loops=1)
+        Index Cond: (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone)
+        Filter: ((status)::text = 'UNSCRATCHED'::text)
+        Index Searches: 1
+        Buffers: shared hit=53
+Planning:
+  Buffers: shared hit=125
+Planning Time: 0.251 ms
+Execution Time: 2.183 ms
+=== W04 run 3 ===
+Update on rewards  (cost=0.29..434.97 rows=0 width=0) (actual time=2.305..2.305 rows=0.00 loops=1)
+  Buffers: shared hit=9674 read=1 dirtied=12 written=12
+  ->  Index Scan using idx_rewards_unscratched_expiry on rewards  (cost=0.29..434.97 rows=9984 width=48) (actual time=0.019..0.208 rows=1034.00 loops=1)
+        Index Cond: (expires_at < '2026-07-04 00:00:00+05:30'::timestamp with time zone)
+        Filter: ((status)::text = 'UNSCRATCHED'::text)
+        Index Searches: 1
+        Buffers: shared hit=53
+Planning:
+  Buffers: shared hit=125
+Planning Time: 0.237 ms
+Execution Time: 2.341 ms

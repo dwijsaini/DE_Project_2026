@@ -1,5 +1,7 @@
 # CP3 Optimization Report
 
+> **Re-benchmark note (25 November 2026):** The original CP3 analysis below is a historical 17 November snapshot on PostgreSQL 18.6. The current post-merge workload and final index set were re-run on PostgreSQL 18.7. A 16th targeted index was added for R22 after the original audit to meet the large-data payment-screen target. Use `docs/03_baseline_timings.md`, `benchmarks/results/baseline/summary.csv`, and `benchmarks/results/optimized/summary.csv` for the current three-run averages; use `docs/05_scalability_report.md` and `benchmarks/results/large/summary.csv` for current large-data results.
+
 **Author:** Gyanshi  
 **Run date:** 17 November 2026 · **Database:** `gpay_cp3` · **PostgreSQL:** 18.6 (Apple Silicon)  
 **Method:** Repository benchmark harness (`benchmarks/run_benchmark.sh`), `EXPLAIN (ANALYZE, BUFFERS)`, 3 runs per query with arithmetic mean reported. Write queries executed inside transactional `BEGIN; ... ROLLBACK;` blocks.  

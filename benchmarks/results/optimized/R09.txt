@@ -1,60 +1,63 @@
 === R09 run 1 ===
-Sort  (cost=48385.11..48579.56 rows=77779 width=79) (actual time=227.702..227.728 rows=468.00 loops=1)
+Sort  (cost=32803.10..32997.24 rows=77656 width=79) (actual time=62.490..62.503 rows=468.00 loops=1)
   Sort Key: t.initiated_at DESC
   Sort Method: quicksort  Memory: 70kB
-  Buffers: shared hit=234854 dirtied=1
-  ->  Subquery Scan on t  (cost=0.57..38608.70 rows=77779 width=79) (actual time=0.840..227.550 rows=468.00 loops=1)
+  Buffers: shared hit=1632 read=2739
+  ->  Subquery Scan on t  (cost=0.50..23044.57 rows=77656 width=79) (actual time=0.286..62.399 rows=468.00 loops=1)
         Filter: (t.gap < '00:10:00'::interval)
         Rows Removed by Filter: 232441
-        Buffers: shared hit=234851 dirtied=1
-        ->  WindowAgg  (cost=0.57..35692.00 rows=233336 width=79) (actual time=0.035..218.361 rows=232909.00 loops=1)
+        Buffers: shared hit=1629 read=2739
+        ->  WindowAgg  (cost=0.50..20132.46 rows=232969 width=79) (actual time=0.049..57.579 rows=232909.00 loops=1)
               Window: w1 AS (PARTITION BY transactions.payer_vpa, transactions.payee_vpa ORDER BY transactions.initiated_at)
               Storage: Memory  Maximum Storage: 17kB
-              Buffers: shared hit=234851 dirtied=1
-              ->  Index Scan using idx_transactions_success_payer_payee_initiated on transactions  (cost=0.42..30441.94 rows=233336 width=63) (actual time=0.019..140.275 rows=232909.00 loops=1)
+              Buffers: shared hit=1629 read=2739
+              ->  Index Only Scan using idx_transactions_success_payer_payee_initiated on transactions  (cost=0.42..14890.65 rows=232969 width=63) (actual time=0.041..15.680 rows=232909.00 loops=1)
+                    Heap Fetches: 1685
                     Index Searches: 1
-                    Buffers: shared hit=234851 dirtied=1
+                    Buffers: shared hit=1629 read=2739
 Planning:
-  Buffers: shared hit=301
-Planning Time: 0.937 ms
-Execution Time: 227.789 ms
+  Buffers: shared hit=293
+Planning Time: 0.523 ms
+Execution Time: 62.534 ms
 === R09 run 2 ===
-Sort  (cost=48385.11..48579.56 rows=77779 width=79) (actual time=257.729..257.756 rows=468.00 loops=1)
+Sort  (cost=32803.10..32997.24 rows=77656 width=79) (actual time=59.409..59.421 rows=468.00 loops=1)
   Sort Key: t.initiated_at DESC
   Sort Method: quicksort  Memory: 70kB
-  Buffers: shared hit=234852
-  ->  Subquery Scan on t  (cost=0.57..38608.70 rows=77779 width=79) (actual time=0.918..256.566 rows=468.00 loops=1)
+  Buffers: shared hit=4371
+  ->  Subquery Scan on t  (cost=0.50..23044.57 rows=77656 width=79) (actual time=0.133..59.325 rows=468.00 loops=1)
         Filter: (t.gap < '00:10:00'::interval)
         Rows Removed by Filter: 232441
-        Buffers: shared hit=234849
-        ->  WindowAgg  (cost=0.57..35692.00 rows=233336 width=79) (actual time=0.037..245.293 rows=232909.00 loops=1)
+        Buffers: shared hit=4368
+        ->  WindowAgg  (cost=0.50..20132.46 rows=232969 width=79) (actual time=0.031..54.527 rows=232909.00 loops=1)
               Window: w1 AS (PARTITION BY transactions.payer_vpa, transactions.payee_vpa ORDER BY transactions.initiated_at)
               Storage: Memory  Maximum Storage: 17kB
-              Buffers: shared hit=234849
-              ->  Index Scan using idx_transactions_success_payer_payee_initiated on transactions  (cost=0.42..30441.94 rows=233336 width=63) (actual time=0.017..162.801 rows=232909.00 loops=1)
+              Buffers: shared hit=4368
+              ->  Index Only Scan using idx_transactions_success_payer_payee_initiated on transactions  (cost=0.42..14890.65 rows=232969 width=63) (actual time=0.026..12.179 rows=232909.00 loops=1)
+                    Heap Fetches: 1685
                     Index Searches: 1
-                    Buffers: shared hit=234849
+                    Buffers: shared hit=4368
 Planning:
-  Buffers: shared hit=301
-Planning Time: 1.051 ms
-Execution Time: 257.822 ms
+  Buffers: shared hit=293
+Planning Time: 0.498 ms
+Execution Time: 59.453 ms
 === R09 run 3 ===
-Sort  (cost=48385.11..48579.56 rows=77779 width=79) (actual time=224.969..225.008 rows=468.00 loops=1)
+Sort  (cost=32803.10..32997.24 rows=77656 width=79) (actual time=60.200..60.232 rows=468.00 loops=1)
   Sort Key: t.initiated_at DESC
   Sort Method: quicksort  Memory: 70kB
-  Buffers: shared hit=234852
-  ->  Subquery Scan on t  (cost=0.57..38608.70 rows=77779 width=79) (actual time=0.840..224.813 rows=468.00 loops=1)
+  Buffers: shared hit=4371
+  ->  Subquery Scan on t  (cost=0.50..23044.57 rows=77656 width=79) (actual time=0.134..60.108 rows=468.00 loops=1)
         Filter: (t.gap < '00:10:00'::interval)
         Rows Removed by Filter: 232441
-        Buffers: shared hit=234849
-        ->  WindowAgg  (cost=0.57..35692.00 rows=233336 width=79) (actual time=0.029..215.586 rows=232909.00 loops=1)
+        Buffers: shared hit=4368
+        ->  WindowAgg  (cost=0.50..20132.46 rows=232969 width=79) (actual time=0.032..55.285 rows=232909.00 loops=1)
               Window: w1 AS (PARTITION BY transactions.payer_vpa, transactions.payee_vpa ORDER BY transactions.initiated_at)
               Storage: Memory  Maximum Storage: 17kB
-              Buffers: shared hit=234849
-              ->  Index Scan using idx_transactions_success_payer_payee_initiated on transactions  (cost=0.42..30441.94 rows=233336 width=63) (actual time=0.014..137.281 rows=232909.00 loops=1)
+              Buffers: shared hit=4368
+              ->  Index Only Scan using idx_transactions_success_payer_payee_initiated on transactions  (cost=0.42..14890.65 rows=232969 width=63) (actual time=0.026..12.559 rows=232909.00 loops=1)
+                    Heap Fetches: 1685
                     Index Searches: 1
-                    Buffers: shared hit=234849
+                    Buffers: shared hit=4368
 Planning:
-  Buffers: shared hit=301
-Planning Time: 0.931 ms
-Execution Time: 225.071 ms
+  Buffers: shared hit=293
+Planning Time: 0.471 ms
+Execution Time: 60.268 ms

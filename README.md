@@ -29,6 +29,13 @@
 
 **Team No.:** T0129 · **Sections:** A, C, A, E · **Repository URL:** https://github.com/dwijsaini/DE_Project_2026
 
+### Team results snapshot
+
+- Seed workload: 250,468 transactions; large workload: 5,009,340 transactions (20×).
+- All 30 optimized queries completed three runs on the large dataset and met their Phase 5 latency targets.
+- See [`docs/04_optimization_report.md`](docs/04_optimization_report.md) for seed before/after query timings and [`docs/05_scalability_report.md`](docs/05_scalability_report.md) for large-data timings, integrity checks, storage, and the partitioning test.
+- Benchmark environment: PostgreSQL 18.7 on a MacBook Pro with Apple M4 and 16 GB RAM.
+
 ---
 
 ## How this project works
@@ -773,7 +780,7 @@ After this step, `gpay_cp3` will contain the full 250,468-transaction seed datas
 psql -d gpay_cp3 -f sql/05_indexes.sql
 ```
 
-This creates all 15 B-tree indexes described in `docs/04_optimization_report.md` (Section 7). Run `VACUUM ANALYZE;` afterwards if you want the planner statistics to fully reflect the new indexes before benchmarking:
+This creates the 16 B-tree workload indexes in `sql/05_indexes.sql`; `docs/04_optimization_report.md` explains the original CP3 choices, and `docs/05_scalability_report.md` documents the added R22 covering index. Run `VACUUM ANALYZE;` afterwards if you want the planner statistics to fully reflect the new indexes before benchmarking:
 
 ```bash
 psql -d gpay_cp3 -c "VACUUM ANALYZE;"

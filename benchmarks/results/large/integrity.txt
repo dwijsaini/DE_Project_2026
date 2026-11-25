@@ -1,0 +1,20 @@
+Large dataset validation record
+Database: gpay_large
+PostgreSQL 18.7 (Postgres.app); TimeZone=Asia/Kolkata
+Loaded row counts (schema constraints enforced during COPY):
+bank_accounts=1066666
+bill_payments=600000
+cities=10
+disputes=73365
+merchants=60000
+rewards=798991
+transactions=5009340
+users=800000
+vpas=1066666
+W01 rollback check: txn_id=90000001 / upi_ref=999900000001 absent:
+0
+Optimized workload: 30 queries x 3 runs; see summary.csv and per-query plan files.
+Partition test: see partition_pruning.txt; 18 subplans removed, June 2026 partition executed.
+
+Seed verification: 36/36 checks passed (six equivalence assertions, all reads, all rolled-back writes).
+Large-data equivalence limitation: the full original-versus-corrected R13 comparison was canceled after more than 3.5 minutes; all 30 optimized large queries were measured three times.

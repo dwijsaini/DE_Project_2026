@@ -1,0 +1,48 @@
+=== R20 run 1 ===
+GroupAggregate  (cost=44734.08..54783.18 rows=267976 width=44) (actual time=55.367..73.625 rows=30.00 loops=1)
+  Group Key: ((initiated_at)::date)
+  Buffers: shared hit=1012 read=5703, temp read=741 written=744
+  ->  Sort  (cost=44734.08..45404.02 rows=267976 width=11) (actual time=54.737..63.092 rows=275235.00 loops=1)
+        Sort Key: ((initiated_at)::date)
+        Sort Method: external merge  Disk: 5928kB
+        Buffers: shared hit=1012 read=5703, temp read=741 written=744
+        ->  Index Scan using idx_transactions_initiated_desc on transactions  (cost=0.43..15992.20 rows=267976 width=11) (actual time=0.012..40.345 rows=275235.00 loops=1)
+              Index Cond: ((initiated_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (initiated_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=1009 read=5703
+Planning:
+  Buffers: shared hit=304 read=5
+Planning Time: 0.472 ms
+Execution Time: 74.881 ms
+=== R20 run 2 ===
+GroupAggregate  (cost=44734.08..54783.18 rows=267976 width=44) (actual time=46.874..64.916 rows=30.00 loops=1)
+  Group Key: ((initiated_at)::date)
+  Buffers: shared hit=6715, temp read=741 written=744
+  ->  Sort  (cost=44734.08..45404.02 rows=267976 width=11) (actual time=46.232..54.584 rows=275235.00 loops=1)
+        Sort Key: ((initiated_at)::date)
+        Sort Method: external merge  Disk: 5928kB
+        Buffers: shared hit=6715, temp read=741 written=744
+        ->  Index Scan using idx_transactions_initiated_desc on transactions  (cost=0.43..15992.20 rows=267976 width=11) (actual time=0.012..31.854 rows=275235.00 loops=1)
+              Index Cond: ((initiated_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (initiated_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=6712
+Planning:
+  Buffers: shared hit=309
+Planning Time: 0.441 ms
+Execution Time: 66.249 ms
+=== R20 run 3 ===
+GroupAggregate  (cost=44734.08..54783.18 rows=267976 width=44) (actual time=46.586..64.275 rows=30.00 loops=1)
+  Group Key: ((initiated_at)::date)
+  Buffers: shared hit=6715, temp read=741 written=744
+  ->  Sort  (cost=44734.08..45404.02 rows=267976 width=11) (actual time=45.964..54.092 rows=275235.00 loops=1)
+        Sort Key: ((initiated_at)::date)
+        Sort Method: external merge  Disk: 5928kB
+        Buffers: shared hit=6715, temp read=741 written=744
+        ->  Index Scan using idx_transactions_initiated_desc on transactions  (cost=0.43..15992.20 rows=267976 width=11) (actual time=0.009..31.971 rows=275235.00 loops=1)
+              Index Cond: ((initiated_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (initiated_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+              Index Searches: 1
+              Buffers: shared hit=6712
+Planning:
+  Buffers: shared hit=309
+Planning Time: 0.462 ms
+Execution Time: 65.602 ms

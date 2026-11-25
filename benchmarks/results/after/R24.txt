@@ -1,0 +1,27 @@
+=== R24 run 1 ===
+Index Scan using transactions_upi_ref_key on transactions  (cost=0.42..8.44 rows=1 width=81) (actual time=0.012..0.012 rows=1.00 loops=1)
+  Index Cond: (upi_ref = '600977648064'::bpchar)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=259
+Planning Time: 0.451 ms
+Execution Time: 0.031 ms
+=== R24 run 2 ===
+Index Scan using transactions_upi_ref_key on transactions  (cost=0.42..8.44 rows=1 width=81) (actual time=0.012..0.012 rows=1.00 loops=1)
+  Index Cond: (upi_ref = '600977648064'::bpchar)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=259
+Planning Time: 0.472 ms
+Execution Time: 0.035 ms
+=== R24 run 3 ===
+Index Scan using transactions_upi_ref_key on transactions  (cost=0.42..8.44 rows=1 width=81) (actual time=0.012..0.012 rows=1.00 loops=1)
+  Index Cond: (upi_ref = '600977648064'::bpchar)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=259
+Planning Time: 0.437 ms
+Execution Time: 0.031 ms
