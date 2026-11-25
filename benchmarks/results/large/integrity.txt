@@ -15,3 +15,6 @@ W01 rollback check: txn_id=90000001 / upi_ref=999900000001 absent:
 0
 Optimized workload: 30 queries x 3 runs; see summary.csv and per-query plan files.
 Partition test: see partition_pruning.txt; 18 subplans removed, June 2026 partition executed.
+
+Seed verification: 36/36 checks passed (six equivalence assertions, all reads, all rolled-back writes).
+Large-data equivalence limitation: the full original-versus-corrected R13 comparison was canceled after more than 3.5 minutes; all 30 optimized large queries were measured three times.

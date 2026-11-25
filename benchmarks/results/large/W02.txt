@@ -1,63 +1,63 @@
 === W02 run 1 ===
-Update on transactions  (cost=0.75..8.77 rows=0 width=0) (actual time=2.138..2.138 rows=0.00 loops=1)
-  Buffers: shared hit=48 read=36 dirtied=16
+Update on transactions  (cost=0.75..8.77 rows=0 width=0) (actual time=0.875..0.876 rows=0.00 loops=1)
+  Buffers: shared hit=61 read=12 dirtied=8
   InitPlan 2
-    ->  Result  (cost=0.31..0.32 rows=1 width=4) (actual time=0.030..0.030 rows=1.00 loops=1)
-          Buffers: shared hit=2 read=1
+    ->  Result  (cost=0.31..0.32 rows=1 width=4) (actual time=0.032..0.032 rows=1.00 loops=1)
+          Buffers: shared hit=3 read=1
           InitPlan 1
-            ->  Limit  (cost=0.28..0.31 rows=1 width=4) (actual time=0.029..0.029 rows=1.00 loops=1)
-                  Buffers: shared hit=2 read=1
-                  ->  Index Only Scan using idx_txn_pending_id on transactions transactions_1  (cost=0.28..87.88 rows=3173 width=4) (actual time=0.029..0.029 rows=1.00 loops=1)
-                        Heap Fetches: 0
+            ->  Limit  (cost=0.28..0.31 rows=1 width=4) (actual time=0.031..0.031 rows=1.00 loops=1)
+                  Buffers: shared hit=3 read=1
+                  ->  Index Only Scan using idx_transactions_pending_txn_id on transactions transactions_1  (cost=0.28..80.36 rows=2672 width=4) (actual time=0.031..0.031 rows=1.00 loops=1)
+                        Heap Fetches: 1
                         Index Searches: 1
-                        Buffers: shared hit=2 read=1
-  ->  Index Scan using transactions_pkey on transactions  (cost=0.43..8.45 rows=1 width=52) (actual time=0.492..0.492 rows=1.00 loops=1)
+                        Buffers: shared hit=3 read=1
+  ->  Index Scan using transactions_pkey on transactions  (cost=0.43..8.45 rows=1 width=52) (actual time=0.046..0.046 rows=1.00 loops=1)
         Index Cond: (txn_id = (InitPlan 2).col1)
         Index Searches: 1
-        Buffers: shared hit=4 read=3
+        Buffers: shared hit=8 read=2
 Planning:
-  Buffers: shared hit=551 read=1
-Planning Time: 0.893 ms
-Execution Time: 2.564 ms
+  Buffers: shared hit=265 read=1
+Planning Time: 0.748 ms
+Execution Time: 1.239 ms
 === W02 run 2 ===
-Update on transactions  (cost=0.75..8.77 rows=0 width=0) (actual time=0.259..0.259 rows=0.00 loops=1)
-  Buffers: shared hit=86 read=1 dirtied=1
+Update on transactions  (cost=0.75..8.77 rows=0 width=0) (actual time=0.298..0.299 rows=0.00 loops=1)
+  Buffers: shared hit=72 read=1 dirtied=1
   InitPlan 2
-    ->  Result  (cost=0.31..0.32 rows=1 width=4) (actual time=0.029..0.029 rows=1.00 loops=1)
+    ->  Result  (cost=0.31..0.32 rows=1 width=4) (actual time=0.034..0.035 rows=1.00 loops=1)
           Buffers: shared hit=4
           InitPlan 1
-            ->  Limit  (cost=0.28..0.31 rows=1 width=4) (actual time=0.028..0.028 rows=1.00 loops=1)
+            ->  Limit  (cost=0.28..0.31 rows=1 width=4) (actual time=0.032..0.033 rows=1.00 loops=1)
                   Buffers: shared hit=4
-                  ->  Index Only Scan using idx_txn_pending_id on transactions transactions_1  (cost=0.28..87.88 rows=3173 width=4) (actual time=0.028..0.028 rows=1.00 loops=1)
+                  ->  Index Only Scan using idx_transactions_pending_txn_id on transactions transactions_1  (cost=0.28..80.36 rows=2672 width=4) (actual time=0.031..0.032 rows=1.00 loops=1)
                         Heap Fetches: 1
                         Index Searches: 1
                         Buffers: shared hit=4
-  ->  Index Scan using transactions_pkey on transactions  (cost=0.43..8.45 rows=1 width=52) (actual time=0.036..0.037 rows=1.00 loops=1)
+  ->  Index Scan using transactions_pkey on transactions  (cost=0.43..8.45 rows=1 width=52) (actual time=0.047..0.048 rows=1.00 loops=1)
         Index Cond: (txn_id = (InitPlan 2).col1)
         Index Searches: 1
         Buffers: shared hit=10
 Planning:
-  Buffers: shared hit=552
-Planning Time: 0.727 ms
-Execution Time: 0.301 ms
+  Buffers: shared hit=266
+Planning Time: 0.511 ms
+Execution Time: 0.348 ms
 === W02 run 3 ===
-Update on transactions  (cost=0.75..8.77 rows=0 width=0) (actual time=0.260..0.261 rows=0.00 loops=1)
-  Buffers: shared hit=86 read=1 dirtied=1
+Update on transactions  (cost=0.75..8.77 rows=0 width=0) (actual time=0.215..0.215 rows=0.00 loops=1)
+  Buffers: shared hit=73 dirtied=1
   InitPlan 2
-    ->  Result  (cost=0.31..0.32 rows=1 width=4) (actual time=0.029..0.029 rows=1.00 loops=1)
+    ->  Result  (cost=0.31..0.32 rows=1 width=4) (actual time=0.027..0.028 rows=1.00 loops=1)
           Buffers: shared hit=4
           InitPlan 1
-            ->  Limit  (cost=0.28..0.31 rows=1 width=4) (actual time=0.028..0.028 rows=1.00 loops=1)
+            ->  Limit  (cost=0.28..0.31 rows=1 width=4) (actual time=0.026..0.027 rows=1.00 loops=1)
                   Buffers: shared hit=4
-                  ->  Index Only Scan using idx_txn_pending_id on transactions transactions_1  (cost=0.28..87.88 rows=3173 width=4) (actual time=0.028..0.028 rows=1.00 loops=1)
+                  ->  Index Only Scan using idx_transactions_pending_txn_id on transactions transactions_1  (cost=0.28..80.36 rows=2672 width=4) (actual time=0.026..0.026 rows=1.00 loops=1)
                         Heap Fetches: 1
                         Index Searches: 1
                         Buffers: shared hit=4
-  ->  Index Scan using transactions_pkey on transactions  (cost=0.43..8.45 rows=1 width=52) (actual time=0.036..0.036 rows=1.00 loops=1)
+  ->  Index Scan using transactions_pkey on transactions  (cost=0.43..8.45 rows=1 width=52) (actual time=0.037..0.037 rows=1.00 loops=1)
         Index Cond: (txn_id = (InitPlan 2).col1)
         Index Searches: 1
         Buffers: shared hit=10
 Planning:
-  Buffers: shared hit=552
-Planning Time: 0.729 ms
-Execution Time: 0.302 ms
+  Buffers: shared hit=266
+Planning Time: 0.435 ms
+Execution Time: 0.257 ms

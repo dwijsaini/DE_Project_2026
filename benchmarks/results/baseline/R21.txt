@@ -1,45 +1,45 @@
 === R21 run 1 ===
-Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.015..1.017 rows=25.00 loops=1)
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.065..1.066 rows=25.00 loops=1)
   Buffers: shared hit=38
-  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.015..1.015 rows=25.00 loops=1)
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.065..1.065 rows=25.00 loops=1)
         Sort Key: merchant_name
         Sort Method: top-N heapsort  Memory: 30kB
         Buffers: shared hit=38
-        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.009..0.952 rows=300.00 loops=1)
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.008..0.993 rows=300.00 loops=1)
               Filter: (merchant_name ~~* '%chai%'::text)
               Rows Removed by Filter: 2700
               Buffers: shared hit=35
 Planning:
-  Buffers: shared hit=104
-Planning Time: 0.812 ms
-Execution Time: 1.027 ms
+  Buffers: shared hit=105
+Planning Time: 0.237 ms
+Execution Time: 1.077 ms
 === R21 run 2 ===
-Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=0.990..0.992 rows=25.00 loops=1)
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.007..1.008 rows=25.00 loops=1)
   Buffers: shared hit=38
-  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=0.990..0.990 rows=25.00 loops=1)
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.006..1.007 rows=25.00 loops=1)
         Sort Key: merchant_name
         Sort Method: top-N heapsort  Memory: 30kB
         Buffers: shared hit=38
-        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.008..0.931 rows=300.00 loops=1)
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.008..0.946 rows=300.00 loops=1)
               Filter: (merchant_name ~~* '%chai%'::text)
               Rows Removed by Filter: 2700
               Buffers: shared hit=35
 Planning:
-  Buffers: shared hit=104
-Planning Time: 0.189 ms
-Execution Time: 1.001 ms
+  Buffers: shared hit=105
+Planning Time: 0.244 ms
+Execution Time: 1.019 ms
 === R21 run 3 ===
-Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=0.989..0.990 rows=25.00 loops=1)
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.041..1.043 rows=25.00 loops=1)
   Buffers: shared hit=38
-  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=0.988..0.989 rows=25.00 loops=1)
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.041..1.042 rows=25.00 loops=1)
         Sort Key: merchant_name
         Sort Method: top-N heapsort  Memory: 30kB
         Buffers: shared hit=38
-        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.008..0.929 rows=300.00 loops=1)
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.008..0.980 rows=300.00 loops=1)
               Filter: (merchant_name ~~* '%chai%'::text)
               Rows Removed by Filter: 2700
               Buffers: shared hit=35
 Planning:
-  Buffers: shared hit=104
-Planning Time: 0.187 ms
-Execution Time: 0.999 ms
+  Buffers: shared hit=105
+Planning Time: 0.220 ms
+Execution Time: 1.055 ms

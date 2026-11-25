@@ -1,63 +1,67 @@
 === R22 run 1 ===
-Sort  (cost=1004.75..1004.76 rows=1 width=45) (actual time=1.308..1.309 rows=2.00 loops=1)
-  Sort Key: ba.is_primary DESC
-  Sort Method: quicksort  Memory: 25kB
-  Buffers: shared hit=164
-  ->  Nested Loop Left Join  (cost=0.70..1004.74 rows=1 width=45) (actual time=0.520..1.293 rows=2.00 loops=1)
-        Join Filter: (v.account_id = ba.account_id)
-        Rows Removed by Join Filter: 2
-        Buffers: shared hit=159
-        ->  Index Scan using bank_accounts_account_id_user_id_key on bank_accounts ba  (cost=0.29..996.30 rows=1 width=28) (actual time=0.508..1.278 rows=2.00 loops=1)
-              Index Cond: (user_id = 15177)
-              Index Searches: 1
-              Buffers: shared hit=151
-        ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.005..0.006 rows=2.00 loops=2)
-              Index Cond: (user_id = 15177)
-              Index Searches: 2
-              Buffers: shared hit=8
-Planning:
-  Buffers: shared hit=272
-Planning Time: 0.708 ms
-Execution Time: 1.356 ms
+                                                                           QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop Left Join  (cost=0.83..16.88 rows=1 width=45) (actual time=0.034..0.037 rows=2.00 loops=1)
+   Join Filter: (v.account_id = ba.account_id)
+   Rows Removed by Join Filter: 2
+   Buffers: shared hit=12
+   ->  Index Only Scan using idx_bank_accounts_user_primary on bank_accounts ba  (cost=0.41..8.43 rows=1 width=28) (actual time=0.011..0.012 rows=2.00 loops=1)
+         Index Cond: (user_id = 15177)
+         Heap Fetches: 0
+         Index Searches: 1
+         Buffers: shared hit=4
+   ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.010..0.011 rows=2.00 loops=2)
+         Index Cond: (user_id = 15177)
+         Index Searches: 2
+         Buffers: shared hit=8
+ Planning:
+   Buffers: shared hit=303
+ Planning Time: 1.107 ms
+ Execution Time: 0.080 ms
+(17 rows)
+
+
 === R22 run 2 ===
-Sort  (cost=1004.75..1004.76 rows=1 width=45) (actual time=1.070..1.070 rows=2.00 loops=1)
-  Sort Key: ba.is_primary DESC
-  Sort Method: quicksort  Memory: 25kB
-  Buffers: shared hit=164
-  ->  Nested Loop Left Join  (cost=0.70..1004.74 rows=1 width=45) (actual time=0.424..1.055 rows=2.00 loops=1)
-        Join Filter: (v.account_id = ba.account_id)
-        Rows Removed by Join Filter: 2
-        Buffers: shared hit=159
-        ->  Index Scan using bank_accounts_account_id_user_id_key on bank_accounts ba  (cost=0.29..996.30 rows=1 width=28) (actual time=0.412..1.039 rows=2.00 loops=1)
-              Index Cond: (user_id = 15177)
-              Index Searches: 1
-              Buffers: shared hit=151
-        ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.005..0.006 rows=2.00 loops=2)
-              Index Cond: (user_id = 15177)
-              Index Searches: 2
-              Buffers: shared hit=8
-Planning:
-  Buffers: shared hit=272
-Planning Time: 0.707 ms
-Execution Time: 1.119 ms
+                                                                           QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop Left Join  (cost=0.83..16.88 rows=1 width=45) (actual time=0.024..0.026 rows=2.00 loops=1)
+   Join Filter: (v.account_id = ba.account_id)
+   Rows Removed by Join Filter: 2
+   Buffers: shared hit=12
+   ->  Index Only Scan using idx_bank_accounts_user_primary on bank_accounts ba  (cost=0.41..8.43 rows=1 width=28) (actual time=0.008..0.009 rows=2.00 loops=1)
+         Index Cond: (user_id = 15177)
+         Heap Fetches: 0
+         Index Searches: 1
+         Buffers: shared hit=4
+   ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.007..0.007 rows=2.00 loops=2)
+         Index Cond: (user_id = 15177)
+         Index Searches: 2
+         Buffers: shared hit=8
+ Planning:
+   Buffers: shared hit=303
+ Planning Time: 0.761 ms
+ Execution Time: 0.099 ms
+(17 rows)
+
+
 === R22 run 3 ===
-Sort  (cost=1004.75..1004.76 rows=1 width=45) (actual time=1.121..1.122 rows=2.00 loops=1)
-  Sort Key: ba.is_primary DESC
-  Sort Method: quicksort  Memory: 25kB
-  Buffers: shared hit=164
-  ->  Nested Loop Left Join  (cost=0.70..1004.74 rows=1 width=45) (actual time=0.475..1.107 rows=2.00 loops=1)
-        Join Filter: (v.account_id = ba.account_id)
-        Rows Removed by Join Filter: 2
-        Buffers: shared hit=159
-        ->  Index Scan using bank_accounts_account_id_user_id_key on bank_accounts ba  (cost=0.29..996.30 rows=1 width=28) (actual time=0.459..1.087 rows=2.00 loops=1)
-              Index Cond: (user_id = 15177)
-              Index Searches: 1
-              Buffers: shared hit=151
-        ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.006..0.007 rows=2.00 loops=2)
-              Index Cond: (user_id = 15177)
-              Index Searches: 2
-              Buffers: shared hit=8
-Planning:
-  Buffers: shared hit=272
-Planning Time: 0.692 ms
-Execution Time: 1.171 ms
+                                                                           QUERY PLAN
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Nested Loop Left Join  (cost=0.83..16.88 rows=1 width=45) (actual time=0.017..0.018 rows=2.00 loops=1)
+   Join Filter: (v.account_id = ba.account_id)
+   Rows Removed by Join Filter: 2
+   Buffers: shared hit=12
+   ->  Index Only Scan using idx_bank_accounts_user_primary on bank_accounts ba  (cost=0.41..8.43 rows=1 width=28) (actual time=0.005..0.005 rows=2.00 loops=1)
+         Index Cond: (user_id = 15177)
+         Heap Fetches: 0
+         Index Searches: 1
+         Buffers: shared hit=4
+   ->  Index Scan using idx_vpas_user_id_vpa on vpas v  (cost=0.41..8.43 rows=1 width=33) (actual time=0.005..0.006 rows=2.00 loops=2)
+         Index Cond: (user_id = 15177)
+         Index Searches: 2
+         Buffers: shared hit=8
+ Planning:
+   Buffers: shared hit=303
+ Planning Time: 0.546 ms
+ Execution Time: 0.044 ms
+(17 rows)

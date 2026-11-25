@@ -1,42 +1,42 @@
 === R13 run 1 ===
-Nested Loop Anti Join  (cost=0.43..29798.24 rows=21776 width=28) (actual time=28.433..31.664 rows=9000.00 loops=1)
-  Buffers: shared hit=177558 read=3181
-  ->  Seq Scan on merchants m  (cost=0.00..1336.00 rows=60000 width=28) (actual time=0.033..1.958 rows=60000.00 loops=1)
+Nested Loop Anti Join  (cost=0.43..30551.53 rows=21614 width=28) (actual time=98.062..101.298 rows=9000.00 loops=1)
+  Buffers: shared hit=169487 read=11305 dirtied=1
+  ->  Seq Scan on merchants m  (cost=0.00..1336.00 rows=60000 width=28) (actual time=0.026..2.002 rows=60000.00 loops=1)
         Buffers: shared read=736
-  ->  Index Only Scan using idx_txn_merchant on transactions t  (cost=0.43..1.87 rows=73 width=4) (actual time=0.000..0.000 rows=0.85 loops=60000)
+  ->  Index Only Scan using idx_transactions_merchant_initiated on transactions t  (cost=0.43..2.43 rows=73 width=4) (actual time=0.002..0.002 rows=0.85 loops=60000)
         Index Cond: (merchant_id = m.merchant_id)
-        Heap Fetches: 0
+        Heap Fetches: 45
         Index Searches: 60000
-        Buffers: shared hit=177558 read=2445
+        Buffers: shared hit=169487 read=10569
 Planning:
-  Buffers: shared hit=622 read=33
-Planning Time: 1.088 ms
-Execution Time: 31.843 ms
+  Buffers: shared hit=383 read=20
+Planning Time: 1.335 ms
+Execution Time: 101.486 ms
 === R13 run 2 ===
-Nested Loop Anti Join  (cost=0.43..29798.24 rows=21776 width=28) (actual time=24.816..27.924 rows=9000.00 loops=1)
-  Buffers: shared hit=180739
-  ->  Seq Scan on merchants m  (cost=0.00..1336.00 rows=60000 width=28) (actual time=0.003..1.617 rows=60000.00 loops=1)
+Nested Loop Anti Join  (cost=0.43..30551.53 rows=21614 width=28) (actual time=60.261..63.421 rows=9000.00 loops=1)
+  Buffers: shared hit=180787
+  ->  Seq Scan on merchants m  (cost=0.00..1336.00 rows=60000 width=28) (actual time=0.003..1.583 rows=60000.00 loops=1)
         Buffers: shared hit=736
-  ->  Index Only Scan using idx_txn_merchant on transactions t  (cost=0.43..1.87 rows=73 width=4) (actual time=0.000..0.000 rows=0.85 loops=60000)
+  ->  Index Only Scan using idx_transactions_merchant_initiated on transactions t  (cost=0.43..2.43 rows=73 width=4) (actual time=0.001..0.001 rows=0.85 loops=60000)
         Index Cond: (merchant_id = m.merchant_id)
-        Heap Fetches: 0
+        Heap Fetches: 42
         Index Searches: 60000
-        Buffers: shared hit=180003
+        Buffers: shared hit=180051
 Planning:
-  Buffers: shared hit=655
-Planning Time: 0.775 ms
-Execution Time: 28.095 ms
+  Buffers: shared hit=403
+Planning Time: 0.541 ms
+Execution Time: 63.605 ms
 === R13 run 3 ===
-Nested Loop Anti Join  (cost=0.43..29798.24 rows=21776 width=28) (actual time=24.737..27.899 rows=9000.00 loops=1)
-  Buffers: shared hit=180739
-  ->  Seq Scan on merchants m  (cost=0.00..1336.00 rows=60000 width=28) (actual time=0.003..1.611 rows=60000.00 loops=1)
+Nested Loop Anti Join  (cost=0.43..30551.53 rows=21614 width=28) (actual time=58.831..61.983 rows=9000.00 loops=1)
+  Buffers: shared hit=180787
+  ->  Seq Scan on merchants m  (cost=0.00..1336.00 rows=60000 width=28) (actual time=0.002..1.583 rows=60000.00 loops=1)
         Buffers: shared hit=736
-  ->  Index Only Scan using idx_txn_merchant on transactions t  (cost=0.43..1.87 rows=73 width=4) (actual time=0.000..0.000 rows=0.85 loops=60000)
+  ->  Index Only Scan using idx_transactions_merchant_initiated on transactions t  (cost=0.43..2.43 rows=73 width=4) (actual time=0.001..0.001 rows=0.85 loops=60000)
         Index Cond: (merchant_id = m.merchant_id)
-        Heap Fetches: 0
+        Heap Fetches: 42
         Index Searches: 60000
-        Buffers: shared hit=180003
+        Buffers: shared hit=180051
 Planning:
-  Buffers: shared hit=655
-Planning Time: 0.781 ms
-Execution Time: 28.068 ms
+  Buffers: shared hit=403
+Planning Time: 0.526 ms
+Execution Time: 62.165 ms

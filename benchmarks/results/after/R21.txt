@@ -1,57 +1,45 @@
 === R21 run 1 ===
-Limit  (cost=70.42..70.48 rows=25 width=47) (actual time=0.241..0.242 rows=25.00 loops=1)
-  Buffers: shared hit=43
-  ->  Sort  (cost=70.42..71.18 rows=303 width=47) (actual time=0.241..0.241 rows=25.00 loops=1)
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.071..1.073 rows=25.00 loops=1)
+  Buffers: shared hit=38
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.071..1.071 rows=25.00 loops=1)
         Sort Key: merchant_name
         Sort Method: top-N heapsort  Memory: 30kB
-        Buffers: shared hit=43
-        ->  Bitmap Heap Scan on merchants  (cost=23.08..61.87 rows=303 width=47) (actual time=0.026..0.176 rows=300.00 loops=1)
-              Recheck Cond: (merchant_name ~~* '%chai%'::text)
-              Heap Blocks: exact=35
-              Buffers: shared hit=40
-              ->  Bitmap Index Scan on idx_merchants_name_trgm  (cost=0.00..23.01 rows=303 width=0) (actual time=0.019..0.019 rows=300.00 loops=1)
-                    Index Cond: (merchant_name ~~* '%chai%'::text)
-                    Index Searches: 1
-                    Buffers: shared hit=5
+        Buffers: shared hit=38
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.009..1.005 rows=300.00 loops=1)
+              Filter: (merchant_name ~~* '%chai%'::text)
+              Rows Removed by Filter: 2700
+              Buffers: shared hit=35
 Planning:
-  Buffers: shared hit=135
-Planning Time: 1.064 ms
-Execution Time: 0.277 ms
+  Buffers: shared hit=105
+Planning Time: 0.220 ms
+Execution Time: 1.084 ms
 === R21 run 2 ===
-Limit  (cost=70.42..70.48 rows=25 width=47) (actual time=0.217..0.218 rows=25.00 loops=1)
-  Buffers: shared hit=43
-  ->  Sort  (cost=70.42..71.18 rows=303 width=47) (actual time=0.217..0.217 rows=25.00 loops=1)
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.098..1.100 rows=25.00 loops=1)
+  Buffers: shared hit=38
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.098..1.099 rows=25.00 loops=1)
         Sort Key: merchant_name
         Sort Method: top-N heapsort  Memory: 30kB
-        Buffers: shared hit=43
-        ->  Bitmap Heap Scan on merchants  (cost=23.08..61.87 rows=303 width=47) (actual time=0.023..0.159 rows=300.00 loops=1)
-              Recheck Cond: (merchant_name ~~* '%chai%'::text)
-              Heap Blocks: exact=35
-              Buffers: shared hit=40
-              ->  Bitmap Index Scan on idx_merchants_name_trgm  (cost=0.00..23.01 rows=303 width=0) (actual time=0.017..0.017 rows=300.00 loops=1)
-                    Index Cond: (merchant_name ~~* '%chai%'::text)
-                    Index Searches: 1
-                    Buffers: shared hit=5
+        Buffers: shared hit=38
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.009..1.032 rows=300.00 loops=1)
+              Filter: (merchant_name ~~* '%chai%'::text)
+              Rows Removed by Filter: 2700
+              Buffers: shared hit=35
 Planning:
-  Buffers: shared hit=135
-Planning Time: 0.585 ms
-Execution Time: 0.249 ms
+  Buffers: shared hit=105
+Planning Time: 0.227 ms
+Execution Time: 1.112 ms
 === R21 run 3 ===
-Limit  (cost=70.42..70.48 rows=25 width=47) (actual time=0.213..0.215 rows=25.00 loops=1)
-  Buffers: shared hit=43
-  ->  Sort  (cost=70.42..71.18 rows=303 width=47) (actual time=0.213..0.214 rows=25.00 loops=1)
+Limit  (cost=81.05..81.11 rows=25 width=47) (actual time=1.094..1.095 rows=25.00 loops=1)
+  Buffers: shared hit=38
+  ->  Sort  (cost=81.05..81.81 rows=303 width=47) (actual time=1.093..1.094 rows=25.00 loops=1)
         Sort Key: merchant_name
         Sort Method: top-N heapsort  Memory: 30kB
-        Buffers: shared hit=43
-        ->  Bitmap Heap Scan on merchants  (cost=23.08..61.87 rows=303 width=47) (actual time=0.021..0.156 rows=300.00 loops=1)
-              Recheck Cond: (merchant_name ~~* '%chai%'::text)
-              Heap Blocks: exact=35
-              Buffers: shared hit=40
-              ->  Bitmap Index Scan on idx_merchants_name_trgm  (cost=0.00..23.01 rows=303 width=0) (actual time=0.016..0.016 rows=300.00 loops=1)
-                    Index Cond: (merchant_name ~~* '%chai%'::text)
-                    Index Searches: 1
-                    Buffers: shared hit=5
+        Buffers: shared hit=38
+        ->  Seq Scan on merchants  (cost=0.00..72.50 rows=303 width=47) (actual time=0.009..1.027 rows=300.00 loops=1)
+              Filter: (merchant_name ~~* '%chai%'::text)
+              Rows Removed by Filter: 2700
+              Buffers: shared hit=35
 Planning:
-  Buffers: shared hit=135
-Planning Time: 0.553 ms
-Execution Time: 0.244 ms
+  Buffers: shared hit=105
+Planning Time: 0.232 ms
+Execution Time: 1.107 ms

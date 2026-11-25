@@ -1,75 +1,30 @@
 === R23 run 1 ===
-Limit  (cost=9696.65..9702.16 rows=25 width=42) (actual time=40.937..40.942 rows=25.00 loops=1)
-  Buffers: shared hit=1649 read=1639 written=418
-  CTE cursor
-    ->  Limit  (cost=9696.18..9696.23 rows=1 width=12) (actual time=14.290..14.291 rows=1.00 loops=1)
-          Buffers: shared hit=5 read=1639 written=418
-          ->  Index Only Scan using idx_txn_ops_page on transactions  (cost=0.42..12142.88 rows=250468 width=12) (actual time=0.002..11.228 rows=200000.00 loops=1)
-                Heap Fetches: 57
-                Index Searches: 1
-                Buffers: shared hit=5 read=1639 written=418
-  ->  Nested Loop  (cost=0.42..18404.59 rows=83489 width=42) (actual time=40.937..40.941 rows=25.00 loops=1)
-        Join Filter: (ROW(t.initiated_at, t.txn_id) < ROW(c.initiated_at, c.txn_id))
-        Rows Removed by Join Filter: 200000
-        Buffers: shared hit=1649 read=1639 written=418
-        ->  Index Only Scan using idx_txn_ops_page on transactions t  (cost=0.42..12142.88 rows=250468 width=42) (actual time=0.021..6.837 rows=200025.00 loops=1)
-              Heap Fetches: 57
-              Index Searches: 1
-              Buffers: shared hit=1644
-        ->  CTE Scan on cursor c  (cost=0.00..0.02 rows=1 width=12) (actual time=0.000..0.000 rows=1.00 loops=200025)
-              Storage: Memory  Maximum Storage: 17kB
-              Buffers: shared hit=5 read=1639 written=418
+Limit  (cost=8878.95..8880.06 rows=25 width=42) (actual time=22.035..22.039 rows=25.00 loops=1)
+  Buffers: shared hit=4313 read=509
+  ->  Index Scan using idx_transactions_initiated_desc on transactions  (cost=0.42..11119.36 rows=250468 width=42) (actual time=0.008..18.535 rows=200025.00 loops=1)
+        Index Searches: 1
+        Buffers: shared hit=4313 read=509
 Planning:
-  Buffers: shared hit=562
-Planning Time: 0.648 ms
-Execution Time: 40.969 ms
+  Buffers: shared hit=264
+Planning Time: 0.404 ms
+Execution Time: 22.053 ms
 === R23 run 2 ===
-Limit  (cost=9696.65..9702.16 rows=25 width=42) (actual time=37.657..37.662 rows=25.00 loops=1)
-  Buffers: shared hit=3288
-  CTE cursor
-    ->  Limit  (cost=9696.18..9696.23 rows=1 width=12) (actual time=11.269..11.269 rows=1.00 loops=1)
-          Buffers: shared hit=1644
-          ->  Index Only Scan using idx_txn_ops_page on transactions  (cost=0.42..12142.88 rows=250468 width=12) (actual time=0.002..8.147 rows=200000.00 loops=1)
-                Heap Fetches: 57
-                Index Searches: 1
-                Buffers: shared hit=1644
-  ->  Nested Loop  (cost=0.42..18404.59 rows=83489 width=42) (actual time=37.657..37.661 rows=25.00 loops=1)
-        Join Filter: (ROW(t.initiated_at, t.txn_id) < ROW(c.initiated_at, c.txn_id))
-        Rows Removed by Join Filter: 200000
-        Buffers: shared hit=3288
-        ->  Index Only Scan using idx_txn_ops_page on transactions t  (cost=0.42..12142.88 rows=250468 width=42) (actual time=0.022..6.628 rows=200025.00 loops=1)
-              Heap Fetches: 57
-              Index Searches: 1
-              Buffers: shared hit=1644
-        ->  CTE Scan on cursor c  (cost=0.00..0.02 rows=1 width=12) (actual time=0.000..0.000 rows=1.00 loops=200025)
-              Storage: Memory  Maximum Storage: 17kB
-              Buffers: shared hit=1644
+Limit  (cost=8878.95..8880.06 rows=25 width=42) (actual time=21.450..21.453 rows=25.00 loops=1)
+  Buffers: shared hit=4822
+  ->  Index Scan using idx_transactions_initiated_desc on transactions  (cost=0.42..11119.36 rows=250468 width=42) (actual time=0.009..17.953 rows=200025.00 loops=1)
+        Index Searches: 1
+        Buffers: shared hit=4822
 Planning:
-  Buffers: shared hit=562
-Planning Time: 0.674 ms
-Execution Time: 37.687 ms
+  Buffers: shared hit=264
+Planning Time: 0.454 ms
+Execution Time: 21.471 ms
 === R23 run 3 ===
-Limit  (cost=9696.65..9702.16 rows=25 width=42) (actual time=37.991..37.996 rows=25.00 loops=1)
-  Buffers: shared hit=3288
-  CTE cursor
-    ->  Limit  (cost=9696.18..9696.23 rows=1 width=12) (actual time=11.435..11.435 rows=1.00 loops=1)
-          Buffers: shared hit=1644
-          ->  Index Only Scan using idx_txn_ops_page on transactions  (cost=0.42..12142.88 rows=250468 width=12) (actual time=0.003..8.236 rows=200000.00 loops=1)
-                Heap Fetches: 57
-                Index Searches: 1
-                Buffers: shared hit=1644
-  ->  Nested Loop  (cost=0.42..18404.59 rows=83489 width=42) (actual time=37.991..37.995 rows=25.00 loops=1)
-        Join Filter: (ROW(t.initiated_at, t.txn_id) < ROW(c.initiated_at, c.txn_id))
-        Rows Removed by Join Filter: 200000
-        Buffers: shared hit=3288
-        ->  Index Only Scan using idx_txn_ops_page on transactions t  (cost=0.42..12142.88 rows=250468 width=42) (actual time=0.023..6.685 rows=200025.00 loops=1)
-              Heap Fetches: 57
-              Index Searches: 1
-              Buffers: shared hit=1644
-        ->  CTE Scan on cursor c  (cost=0.00..0.02 rows=1 width=12) (actual time=0.000..0.000 rows=1.00 loops=200025)
-              Storage: Memory  Maximum Storage: 17kB
-              Buffers: shared hit=1644
+Limit  (cost=8878.95..8880.06 rows=25 width=42) (actual time=21.165..21.168 rows=25.00 loops=1)
+  Buffers: shared hit=4822
+  ->  Index Scan using idx_transactions_initiated_desc on transactions  (cost=0.42..11119.36 rows=250468 width=42) (actual time=0.008..17.663 rows=200025.00 loops=1)
+        Index Searches: 1
+        Buffers: shared hit=4822
 Planning:
-  Buffers: shared hit=562
-Planning Time: 0.666 ms
-Execution Time: 38.020 ms
+  Buffers: shared hit=264
+Planning Time: 0.441 ms
+Execution Time: 21.184 ms

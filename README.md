@@ -780,7 +780,7 @@ After this step, `gpay_cp3` will contain the full 250,468-transaction seed datas
 psql -d gpay_cp3 -f sql/05_indexes.sql
 ```
 
-This creates all 15 B-tree indexes described in `docs/04_optimization_report.md` (Section 7). Run `VACUUM ANALYZE;` afterwards if you want the planner statistics to fully reflect the new indexes before benchmarking:
+This creates the 16 B-tree workload indexes in `sql/05_indexes.sql`; `docs/04_optimization_report.md` explains the original CP3 choices, and `docs/05_scalability_report.md` documents the added R22 covering index. Run `VACUUM ANALYZE;` afterwards if you want the planner statistics to fully reflect the new indexes before benchmarking:
 
 ```bash
 psql -d gpay_cp3 -c "VACUUM ANALYZE;"

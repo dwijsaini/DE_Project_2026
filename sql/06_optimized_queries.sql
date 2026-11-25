@@ -247,7 +247,7 @@ LIMIT 25;
 -- Payment screen: user 15177's primary bank account and all their UPI IDs
 -- Optimized: Added v.user_id = ba.user_id to the join condition (guaranteed by the composite FK
 -- on (account_id, user_id)). This allows the join to use the idx_vpas_user_id_vpa index
--- instead of scanning all 53,333 rows in vpas.
+-- instead of scanning the full bank_accounts table; the user-scoped covering index keeps this path selective at scale.
 SELECT ba.bank_name, ba.account_last4, ba.is_primary, v.vpa, v.is_active
 FROM bank_accounts ba
 LEFT JOIN vpas v ON v.account_id = ba.account_id AND v.user_id = ba.user_id

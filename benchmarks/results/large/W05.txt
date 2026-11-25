@@ -1,45 +1,45 @@
 === W05 run 1 ===
-Update on bill_payments  (cost=322.51..7921.14 rows=0 width=0) (actual time=319.860..319.861 rows=0.00 loops=1)
-  Buffers: shared hit=34597 read=4753 dirtied=4746 written=5
-  ->  Bitmap Heap Scan on bill_payments  (cost=322.51..7921.14 rows=27642 width=40) (actual time=0.365..6.638 rows=4113.00 loops=1)
+Update on bill_payments  (cost=326.84..8182.84 rows=0 width=0) (actual time=23.459..23.459 rows=0.00 loops=1)
+  Buffers: shared hit=35710 read=4936 dirtied=4791 written=49
+  ->  Bitmap Heap Scan on bill_payments  (cost=326.84..8182.84 rows=28200 width=40) (actual time=0.706..8.764 rows=4113.00 loops=1)
         Recheck Cond: ((due_date < '2026-07-05'::date) AND ((status)::text = 'DUE'::text))
         Heap Blocks: exact=3174
-        Buffers: shared read=3179
-        ->  Bitmap Index Scan on idx_bills_due_date  (cost=0.00..315.60 rows=27642 width=0) (actual time=0.176..0.176 rows=4113.00 loops=1)
+        Buffers: shared read=3179 dirtied=3173
+        ->  Bitmap Index Scan on idx_bills_due_date  (cost=0.00..319.79 rows=28200 width=0) (actual time=0.510..0.510 rows=4113.00 loops=1)
               Index Cond: (due_date < '2026-07-05'::date)
               Index Searches: 1
               Buffers: shared read=5
 Planning:
-  Buffers: shared hit=115 read=4
-Planning Time: 0.288 ms
-Execution Time: 319.906 ms
+  Buffers: shared hit=106 read=4
+Planning Time: 0.285 ms
+Execution Time: 23.499 ms
 === W05 run 2 ===
-Update on bill_payments  (cost=322.67..7926.60 rows=0 width=0) (actual time=14.925..14.925 rows=0.00 loops=1)
-  Buffers: shared hit=40277 dirtied=48 written=48
-  ->  Bitmap Heap Scan on bill_payments  (cost=322.67..7926.60 rows=27662 width=40) (actual time=0.360..4.612 rows=4113.00 loops=1)
+Update on bill_payments  (cost=332.28..8240.07 rows=0 width=0) (actual time=16.041..16.042 rows=0.00 loops=1)
+  Buffers: shared hit=40315 dirtied=149 written=49
+  ->  Bitmap Heap Scan on bill_payments  (cost=332.28..8240.07 rows=28386 width=40) (actual time=0.336..5.436 rows=4113.00 loops=1)
         Recheck Cond: ((due_date < '2026-07-05'::date) AND ((status)::text = 'DUE'::text))
         Heap Blocks: exact=3174
-        Buffers: shared hit=3179
-        ->  Bitmap Index Scan on idx_bills_due_date  (cost=0.00..315.75 rows=27662 width=0) (actual time=0.180..0.180 rows=4113.00 loops=1)
+        Buffers: shared hit=3179 dirtied=91
+        ->  Bitmap Index Scan on idx_bills_due_date  (cost=0.00..325.18 rows=28386 width=0) (actual time=0.165..0.165 rows=4113.00 loops=1)
               Index Cond: (due_date < '2026-07-05'::date)
               Index Searches: 1
               Buffers: shared hit=5
 Planning:
-  Buffers: shared hit=119
-Planning Time: 0.272 ms
-Execution Time: 14.973 ms
+  Buffers: shared hit=110
+Planning Time: 0.215 ms
+Execution Time: 16.081 ms
 === W05 run 3 ===
-Update on bill_payments  (cost=324.09..7978.78 rows=0 width=0) (actual time=14.490..14.491 rows=0.00 loops=1)
-  Buffers: shared hit=40311 dirtied=49 written=49
-  ->  Bitmap Heap Scan on bill_payments  (cost=324.09..7978.78 rows=27846 width=40) (actual time=0.328..4.433 rows=4113.00 loops=1)
+Update on bill_payments  (cost=333.72..8293.30 rows=0 width=0) (actual time=17.669..17.670 rows=0.00 loops=1)
+  Buffers: shared hit=40747 read=52 dirtied=49 written=49
+  ->  Bitmap Heap Scan on bill_payments  (cost=333.72..8293.30 rows=28572 width=40) (actual time=0.339..5.733 rows=4113.00 loops=1)
         Recheck Cond: ((due_date < '2026-07-05'::date) AND ((status)::text = 'DUE'::text))
         Heap Blocks: exact=3174
         Buffers: shared hit=3179
-        ->  Bitmap Index Scan on idx_bills_due_date  (cost=0.00..317.13 rows=27846 width=0) (actual time=0.162..0.162 rows=4113.00 loops=1)
+        ->  Bitmap Index Scan on idx_bills_due_date  (cost=0.00..326.58 rows=28572 width=0) (actual time=0.168..0.168 rows=4113.00 loops=1)
               Index Cond: (due_date < '2026-07-05'::date)
               Index Searches: 1
               Buffers: shared hit=5
 Planning:
-  Buffers: shared hit=119
-Planning Time: 0.243 ms
-Execution Time: 14.533 ms
+  Buffers: shared hit=110
+Planning Time: 0.226 ms
+Execution Time: 17.707 ms
